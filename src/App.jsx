@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Lock,
-  Unlock,
-  Play,
   Star,
   Clock,
   Info,
-  CalendarDays,
   Instagram,
   ArrowRight,
   User,
@@ -17,83 +13,175 @@ import {
   ShieldCheck,
   X,
   Sparkles,
-  AlertCircle,
   CheckCircle2,
-  Video
+  Image as ImageIcon,
+  Facebook,
+  Languages
 } from 'lucide-react';
 
-// Data
-const coursesData = [
+// Translations
+const translations = {
+  en: {
+    title: "Saikrupa Waterproofing",
+    welcome: "Welcome back",
+    loginTitle: "Saikrupa Waterproofing",
+    loginSubtitle: "Please enter your details to continue.",
+    fullName: "Full Name",
+    mobileNumber: "Mobile Number",
+    enterWebsite: "Enter Website",
+    safeSecure: "Safe & Secure Access",
+    heroTitle: "100% Leakage Proof",
+    heroSubtitle: "Guarantee!",
+    heroDesc: "Terrace, Bathroom, Water Tank, and External Walls waterproofing services. Protect your home today!",
+    contactPerson: "Contact Anil Gadhe",
+    callUs: "Call us for free site inspection & quotation!",
+    ourServices: "Our Services & Gallery",
+    viewImage: "View Image",
+    testimonialsTitle: "Customer Testimonials",
+    sendEnquiry: "Send Your Enquiry",
+    enquiryPlaceholder: "Write your problem here (e.g. Terrace leakage, Bathroom)...",
+    sendWhatsapp: "Send on WhatsApp",
+    available247: "Available 24/7",
+    freeInspection: "Free Inspection",
+    bookVisit: "Book a Free Site Visit today.",
+    premiumQuality: "Premium Quality",
+    gallery: "Gallery",
+    customer: "Customer"
+  },
+  mr: {
+    title: "साईकृपा वॉटरप्रूफिंग",
+    welcome: "स्वागत आहे",
+    loginTitle: "साईकृपा वॉटरप्रूफिंग",
+    loginSubtitle: "कृपया पुढे जाण्यासाठी आपली माहिती भरा.",
+    fullName: "पूर्ण नाव",
+    mobileNumber: "मोबाईल नंबर",
+    enterWebsite: "वेबसाइट पहा",
+    safeSecure: "सुरक्षित प्रवेश",
+    heroTitle: "१००% गळती बंद",
+    heroSubtitle: "गॅरंटी!",
+    heroDesc: "टेरेस, बाथरूम, पाण्याची टाकी आणि बाहेरील भिंतींच्या वॉटरप्रूफिंग सेवा. आजच आपल्या घराचे रक्षण करा!",
+    contactPerson: "संपर्क: अनिल गाढे",
+    callUs: "मोफत तपासणी आणि कोटेशनसाठी फोन करा!",
+    ourServices: "आमच्या सेवा आणि फोटो",
+    viewImage: "फोटो पहा",
+    testimonialsTitle: "ग्राहकांच्या प्रतिक्रिया",
+    sendEnquiry: "तुमची चौकशी पाठवा",
+    enquiryPlaceholder: "तुमची समस्या येथे लिहा (उदा. गच्ची गळती, बाथरूम)...",
+    sendWhatsapp: "व्हॉट्सॲपवर पाठवा",
+    available247: "२४/७ उपलब्ध",
+    freeInspection: "मोफत तपासणी",
+    bookVisit: "आजच मोफत व्हिजिट बुक करा.",
+    premiumQuality: "उत्तम दर्जा",
+    gallery: "गॅलरी",
+    customer: "ग्राहक"
+  }
+};
+
+// Data - Saikrupa Waterproofing Services
+const servicesData = [
   {
-    id: "day-01",
-    title: "Day 01 | Create Facebook Page That Can Generate 50+ High Quality Leads Everyday",
-    platform: "Facebook Marketing",
-    instructor: "TechManager",
+    id: "service-01",
+    title_en: "Terrace Waterproofing",
+    title_mr: "टेरेस वॉटरप्रूफिंग",
+    platform_en: "Terrace Solutions",
+    platform_mr: "टेरेस सोल्यूशन्स",
     rating: 5,
-    summary: "Master the foundational structure of a professional Facebook page designed specifically for high-volume lead generation and brand authority.",
-    category: "Lead Generation",
-    thumbnailUrl: "https://firebasestorage.googleapis.com/v0/b/techmanagerotpverification.firebasestorage.app/o/uploads%2Fimages%2F1764873879673_Gemini_Generated_Image_yrsva0yrsva0yrsv.png?alt=media&token=26586abf-22df-4983-8bb2-d37e1b7d1f2d",
-    videoUrl: "https://firebasestorage.googleapis.com/v0/b/techmanagerotpverification.firebasestorage.app/o/03%20Days%20Class%20Videos%2FLec-01.mp4?alt=media&token=ed299289-2cdb-42c0-8fb8-e3491814b12d",
-    duration: "1 Hour",
+    summary_en: "Complete terrace leakage solution using polymer coating and brick bat coba. 100% leak-proof guarantee for your roof.",
+    summary_mr: "पॉलिमर कोटिंग आणि ब्रिक बॅट कोबा वापरून टेरेस गळतीवर पूर्ण उपाय. आपल्या छतासाठी १००% गळती थांबवण्याची गॅरंटी.",
+    category_en: "Roof Protection",
+    category_mr: "छत संरक्षण",
+    thumbnailUrl: "https://waterproofingcontractors.co.in/images/services/terrace-waterproofing-services.jpg",
+    duration_en: "Lifetime Guarantee",
+    duration_mr: "आजीवन गॅरंटी",
     dateAdded: "2024-01-01T00:00:00Z"
   },
   {
-    id: "day-02",
-    title: "Day 02 | Practical Meta Ads Setup (Step-by-Step)",
-    platform: "Meta Ads Manager",
-    instructor: "TechManager",
-    rating: 4,
-    summary: "A deep dive into the technical setup of Meta Ads. Learn precise audience targeting to reach your ideal customers and maximize ROI.",
-    category: "Ads Mastery",
-    thumbnailUrl: "https://firebasestorage.googleapis.com/v0/b/techmanagerotpverification.firebasestorage.app/o/uploads%2Fimages%2F1764873982707_Gemini_Generated_Image_fdr5pofdr5pofdr5.png?alt=media&token=b2bb0e14-116c-4cf8-bf66-c8463db15a1b",
-    videoUrl: "https://firebasestorage.googleapis.com/v0/b/techmanagerotpverification.firebasestorage.app/o/03%20Days%20Class%20Videos%2FLec-02.mp4?alt=media&token=41a20e44-99f0-4536-9455-dcc935903443",
-    duration: "1 Hour",
+    id: "service-02",
+    title_en: "Bathroom & Tank Leakage",
+    title_mr: "बाथरूम आणि टाकी गळती",
+    platform_en: "Internal Leakage",
+    platform_mr: "अंतर्गत गळती",
+    rating: 5,
+    summary_en: "Advanced chemical treatment for bathrooms and water tanks without breaking tiles. Fast and effective solution.",
+    summary_mr: "टाईल्स न फोडता बाथरूम आणि पाण्याच्या टाकीसाठी प्रगत केमिकल ट्रीटमेंट. जलद आणि प्रभावी उपाय.",
+    category_en: "Leakage Repair",
+    category_mr: "गळती दुरुस्ती",
+    thumbnailUrl: "https://images.bergerpaints.com/s3fs-public/2024-03/Waterproofing-the-roofs.png?VersionId=XQzx765DhmC8pGVPMkpWxbby5.F2DS.r&format=webp&width=3840&quality=75",
+    duration_en: "No Breaking",
+    duration_mr: "तोडफोड नाही",
     dateAdded: "2024-01-01T00:01:00Z"
   },
   {
-    id: "day-03",
-    title: "Day 03 | Meta Business Suite + ChatGPT Smart Integration",
-    platform: "AI Automation",
-    instructor: "TechManager",
+    id: "service-03",
+    title_en: "External Wall Coating",
+    title_mr: "बाहेरील भिंत कोटिंग",
+    platform_en: "Wall Protection",
+    platform_mr: "भिंत संरक्षण",
     rating: 5,
-    summary: "Leverage ChatGPT and Meta Business Suite to automate your content creation workflow and generate high-converting ad copies in seconds.",
-    category: "AI Marketing",
-    thumbnailUrl: "https://firebasestorage.googleapis.com/v0/b/techmanagerotpverification.firebasestorage.app/o/uploads%2Fimages%2F1764874007366_Gemini_Generated_Image_xmataxxmataxxmat.png?alt=media&token=86edb7a0-a38b-4d90-b33d-d80bb3aef1d7",
-    videoUrl: "https://firebasestorage.googleapis.com/v0/b/techmanagerotpverification.firebasestorage.app/o/03%20Days%20Class%20Videos%2FMeta%20Business%20Suite%20%2B%20ChatGpt%20.mp4?alt=media&token=e4aba1c0-780a-43fb-92e1-cffc8b81003c",
-    duration: "1 Hour",
+    summary_en: "Protect your building's exterior from rain damage. High-quality crack filling and waterproof painting services.",
+    summary_mr: "पावसाच्या नुकसानीपासून आपल्या इमारतीच्या बाहेरील भागाचे संरक्षण करा. उच्च दर्जाचे क्रॅक फिलिंग आणि वॉटरप्रूफ पेंटिंग सेवा.",
+    category_en: "Wall Care",
+    category_mr: "भिंत काळजी",
+    thumbnailUrl: "https://www.mripl.net/wp-content/uploads/2024/05/Waterproofing-Contractors.jpg",
+    duration_en: "5 Year Warranty",
+    duration_mr: "५ वर्षे गॅरंटी",
     dateAdded: "2024-01-01T00:02:00Z"
+  },
+  {
+    id: "service-04",
+    title_en: "Crack Filling & Repairs",
+    title_mr: "भेगा भरणे आणि दुरुस्ती",
+    platform_en: "Maintenance",
+    platform_mr: "देखभाल",
+    rating: 5,
+    summary_en: "Professional filling of structural cracks in walls and ceilings to prevent major damage.",
+    summary_mr: "भिंती आणि छतामधील भेगा भरून मोठ्या नुकसानीपासून वाचण्यासाठी प्रोफेशनल सेवा.",
+    category_en: "Repairs",
+    category_mr: "दुरुस्ती",
+    thumbnailUrl: "https://plus.unsplash.com/premium_photo-1664302152990-410e4c3c6f66?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=80",
+    duration_en: "Quick Service",
+    duration_mr: "जलद सेवा",
+    dateAdded: "2024-01-01T00:03:00Z"
   }
 ];
 
 const testimonialsData = [
   {
-    name: "अमोल पाटील",
-    initials: "AP",
-    text: "चैतन्य सरांची शिकवण्याची पद्धत एकदम भारी आहे. आधी मला फेसबुक ॲड्समध्ये खूप लॉस होत होता, पण त्यांच्या स्ट्रॅटेजीमुळे आता रोजचे ५०+ लीड्स येत आहेत. थँक्स सर!",
-    time: "मागील बॅच मधील प्रतिक्रिया"
+    name: "अनिल गाढे",
+    initials: "AG",
+    text_en: "My terrace was leaking badly. Saikrupa Waterproofing did an excellent job. Now there is no leakage at all in the rainy season. Thank you very much!",
+    text_mr: "माझ्या घराच्या टेरेसवरून खूप गळती होत होती. साईकृपा वॉटरप्रूफिंगने उत्तम काम केले. आता पावसाळ्यात अजिबात गळती होत नाही. खूप धन्यवाद!",
+    time_en: "Satisfied Customer",
+    time_mr: "समाधानी ग्राहक"
   },
   {
-    name: "स्नेहल माने",
-    initials: "SM",
-    text: "मार्केटमध्ये हजारो कोर्सेस आहेत पण इतकं प्रॅक्टिकल आणि मराठीत कोणीच शिकवत नाही. रिअल इस्टेटच्या माझ्या व्यवसायासाठी हे वरदान ठरलं आहे. नक्की ट्राय करा!",
-    time: "मागील बॅच मधील प्रतिक्रिया"
+    name: "अनिल गाढे",
+    initials: "AG",
+    text_en: "They treated the bathroom leakage without breaking tiles. The work was done at a very low cost and the leakage stopped completely. Highly recommended.",
+    text_mr: "बाथरूम लिकेजसाठी टाइल्स न फोडता यांनी ट्रीटमेंट केली. खूप कमी खर्चात काम झाले आणि गळती पूर्ण थांबली. नक्कीच शिफारस करेन.",
+    time_en: "Satisfied Customer",
+    time_mr: "समाधानी ग्राहक"
   },
   {
-    name: "राहुल साळुंखे",
-    initials: "RS",
-    text: "सुरुवातीला मला वाटलं होतं हे पण इतर कोर्सेससारखं असेल, पण मास्टरक्लास पाहिल्यावर डोळे उघडले. फेसबुक पेज सेट-अप आणि चॅटजीपीटी चा वापर करून ॲड कॉपी लिहणं खूप सोपं झालं.",
-    time: "मागील बॅच मधील प्रतिक्रिया"
+    name: "अनिल गाढे",
+    initials: "AG",
+    text_en: "Timely and professional work. The material used is very good. Gave a 5-year guarantee which increased trust.",
+    text_mr: "वेळेवर आणि प्रोफेशनल काम. यांनी वापरलेले मटेरिअल खूप चांगले आहे. 5 वर्षांची गॅरंटी दिली आहे ज्यामुळे विश्वास वाढला.",
+    time_en: "Satisfied Customer",
+    time_mr: "समाधानी ग्राहक"
   }
 ];
 
 function App() {
   const [user, setUser] = useState(null);
-  const [courses, setCourses] = useState(coursesData);
-  const [lockedInfo, setLockedInfo] = useState(null);
-  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [courses, setCourses] = useState(servicesData);
+  const [selectedImage, setSelectedImage] = useState(null);
   const [feedback, setFeedback] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+
+  // Language State: Default 'mr' (Marathi)
+  const [lang, setLang] = useState('mr');
 
   useEffect(() => {
     const storedUser = localStorage.getItem("tm_school_user");
@@ -106,6 +194,8 @@ function App() {
     }
   }, []);
 
+  const t = translations[lang];
+
   const handleLogin = (e) => {
     e.preventDefault();
     if (name.trim() && phone.trim()) {
@@ -115,67 +205,23 @@ function App() {
     }
   };
 
-  const checkLockStatus = (courseId) => {
-    const now = new Date();
-    if (courseId === "day-01") return { isLocked: false, label: "Available Now" };
-
-    // Logic for Day 2 and Day 3
-    const dayOffset = courseId === "day-02" ? 2 : 3; // 2=Tuesday, 3=Wednesday
-    const targetDayName = courseId === "day-02" ? "Tuesday" : "Wednesday";
-
-    // Calculate target date relative to current week
-    const targetDate = new Date(now);
-    const currentDay = targetDate.getDay(); // 0-6
-    const diff = currentDay - dayOffset;
-
-    // Set to the target day of the current week
-    targetDate.setDate(targetDate.getDate() - diff);
-    targetDate.setHours(21, 30, 0, 0); // 9:30 PM
-
-    // If today is Monday (1) and target is Tuesday (2), diff is -1. targetDate becomes tomorrow.
-    // If today is Wednesday (3) and target is Tuesday (2), diff is 1. targetDate becomes yesterday.
-
-    // Special handling if current day is BEFORE the target day in the week?
-    // The original logic was: Q.setDate(Q.getDate() - Gl), where Gl = Q.getDay() - gl.
-    // That aligns Q to the target day of the SAME week.
-    // Then checks if now < Q.
-
-    // If today is Monday: Q becomes Tuesday (tomorrow). now < Q. Locked.
-    // If today is Tuesday: Q becomes Tuesday (today).
-    //   If time < 9:30PM: now < Q. Locked.
-    //   If time > 9:30PM: now > Q. Unlocked.
-    // If today is Wednesday: Q becomes Tuesday (yesterday). now > Q. Unlocked.
-
-    return {
-      isLocked: now < targetDate,
-      label: `Available ${targetDayName} 9:30 PM`,
-      targetDate: targetDate.toLocaleDateString("en-IN", { day: "numeric", month: "long" }),
-      targetDayName: targetDayName
-    };
-  };
-
   const handleRating = (courseId, rating) => {
     setCourses(prev => prev.map(c => c.id === courseId ? { ...c, rating } : c));
   };
 
   const handleWhatsApp = () => {
     if (!feedback.trim()) return;
-    const phone = "9684006926";
-    const text = encodeURIComponent(`नमस्ते चैतन्य सर, मी ${user?.name}. माझी प्रतिक्रिया: ${feedback}`);
+    const phone = "8007256435";
+    const text = encodeURIComponent(`नमस्ते साईकृपा वॉटरप्रूफिंग, मी ${user?.name}. माझी प्रतिक्रिया/चौकशी: ${feedback}`);
     window.open(`https://wa.me/${phone}?text=${text}`, "_blank");
   };
 
-  const handlePlay = (courseId, videoUrl) => {
-    const status = checkLockStatus(courseId);
-    if (status.isLocked) {
-      setLockedInfo({
-        isOpen: true,
-        day: status.targetDayName || "Tuesday",
-        date: status.targetDate || ""
-      });
-    } else {
-      setSelectedVideo(videoUrl);
-    }
+  const handleViewImage = (imageUrl) => {
+    setSelectedImage(imageUrl);
+  };
+
+  const toggleLanguage = () => {
+    setLang(prev => prev === 'en' ? 'mr' : 'en');
   };
 
   if (!user) {
@@ -184,19 +230,30 @@ function App() {
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-100 rounded-full blur-3xl opacity-60"></div>
         <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-indigo-100 rounded-full blur-3xl opacity-60"></div>
 
+        {/* Language Switcher Login Page */}
+        <div className="absolute top-6 right-6 z-50">
+          <button
+            onClick={toggleLanguage}
+            className="bg-white/80 backdrop-blur-md hover:bg-white text-slate-800 px-4 py-2 rounded-full font-bold shadow-md transition-all flex items-center gap-2 border border-slate-200"
+          >
+            <Languages size={18} className="text-blue-600" />
+            {lang === 'en' ? 'मराठी' : 'English'}
+          </button>
+        </div>
+
         <div className="w-full max-w-xl relative">
           <div className="text-center mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center text-white font-black text-2xl mx-auto mb-6 shadow-xl shadow-slate-200">
-              T
+            <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl mx-auto mb-6 shadow-xl shadow-blue-200">
+              S
             </div>
-            <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-3">TechManager School</h1>
-            <p className="text-slate-500 font-medium">Please enter your details to access the Masterclass.</p>
+            <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-3">{t.loginTitle}</h1>
+            <p className="text-slate-500 font-medium">{t.loginSubtitle}</p>
           </div>
 
           <form onSubmit={handleLogin} className="bg-white/70 backdrop-blur-xl p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/50 animate-in fade-in zoom-in-95 duration-500">
             <div className="space-y-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Full Name</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">{t.fullName}</label>
                 <div className="relative">
                   <User className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                   <input
@@ -204,14 +261,14 @@ function App() {
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Enter your name"
+                    placeholder={lang === 'en' ? "Enter your name" : "तुमचे नाव टाका"}
                     className="w-full bg-white border border-slate-200 rounded-2xl py-5 pl-14 pr-6 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-semibold"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Mobile Number</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">{t.mobileNumber}</label>
                 <div className="relative">
                   <Phone className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                   <input
@@ -227,7 +284,7 @@ function App() {
 
               <div className="pt-4">
                 <button type="submit" className="w-full bg-slate-900 hover:bg-blue-600 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3 group">
-                  Join Masterclass <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                  {t.enterWebsite} <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
             </div>
@@ -235,7 +292,7 @@ function App() {
 
           <div className="mt-8 flex items-center justify-center gap-2 text-slate-400">
             <ShieldCheck size={14} />
-            <span className="text-[10px] font-bold uppercase tracking-widest">Safe & Secure Access</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest">{t.safeSecure}</span>
           </div>
         </div>
       </div>
@@ -244,48 +301,18 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#fcfcfd] relative font-inter">
-      {/* Video Modal */}
-      {selectedVideo && (
-        <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 md:p-8 bg-slate-950/90 backdrop-blur-xl animate-in fade-in zoom-in duration-300" onClick={() => setSelectedVideo(null)}>
-          <button className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-[510] bg-white/10 p-2 rounded-full backdrop-blur-md" onClick={() => setSelectedVideo(null)}>
+      {/* Image Modal */}
+      {selectedImage && (
+        <div className="fixed inset-0 z-[500] flex items-center justify-center p-0 bg-black/95 backdrop-blur-xl animate-in fade-in zoom-in duration-300" onClick={() => setSelectedImage(null)}>
+          <button className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-[510] bg-white/10 p-2 rounded-full backdrop-blur-md" onClick={() => setSelectedImage(null)}>
             <X size={32} />
           </button>
-          <div className="w-full max-w-5xl aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl relative border border-white/10" onClick={(e) => e.stopPropagation()}>
-            <video
-              src={selectedVideo}
-              className="w-full h-full"
-              controls
-              autoPlay
-              playsInline
-              controlsList="nodownload"
-            >
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        </div>
-      )}
-
-      {/* Locked Modal */}
-      {lockedInfo && (
-        <div className="fixed inset-0 z-[400] flex items-center justify-center p-6 bg-slate-900/70 backdrop-blur-2xl animate-in fade-in duration-300">
-          <div className="w-full max-w-lg bg-white rounded-[3rem] p-10 md:p-14 shadow-2xl relative overflow-hidden text-center border border-white/20">
-            <div className="absolute -top-24 -left-24 w-64 h-64 bg-red-50 rounded-full blur-3xl opacity-50"></div>
-            <div className="relative z-10">
-              <div className="w-24 h-24 bg-red-50 text-red-500 rounded-3xl mx-auto flex items-center justify-center mb-8 shadow-inner">
-                <AlertCircle size={44} />
-              </div>
-              <h3 className="text-3xl font-black text-slate-900 tracking-tight mb-6">Recording Locked!</h3>
-              <div className="space-y-4 bg-slate-50 rounded-[2rem] p-8 border border-slate-100 mb-8">
-                <p className="text-slate-600 font-bold leading-relaxed text-lg">You are not allowed to watch this recording. This is locked.</p>
-                <p className="text-blue-600 font-black leading-relaxed">You need to join the live class @ {lockedInfo.day} {lockedInfo.date} @ 8:00 PM Live.</p>
-                <div className="flex items-center justify-center gap-2 text-[11px] font-black uppercase tracking-[0.2em] text-amber-600 bg-amber-50 py-3 rounded-xl border border-amber-100">
-                  <Clock size={14} /> Available after 9:30 PM (Post-Session)
-                </div>
-              </div>
-              <button onClick={() => setLockedInfo(null)} className="w-full bg-slate-900 hover:bg-blue-600 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] shadow-xl transition-all active:scale-95">
-                Understood, Go Back
-              </button>
-            </div>
+          <div className="w-full h-full flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={selectedImage}
+              alt="Service Detail"
+              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+            />
           </div>
         </div>
       )}
@@ -293,169 +320,181 @@ function App() {
       <header className="bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white font-black text-lg">T</div>
-            <h1 className="text-xl font-black text-slate-900 tracking-tight">TechManager School</h1>
+            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-lg">S</div>
+            <h1 className="text-xl font-black text-slate-900 tracking-tight">{t.title}</h1>
           </div>
           <div className="flex items-center gap-4">
+            {/* Language Switcher Header */}
+            <button
+              onClick={toggleLanguage}
+              className="hidden md:flex bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-1.5 rounded-full font-bold text-xs transition-all items-center gap-1.5 border border-slate-200 mr-2"
+            >
+              <Languages size={14} className="text-blue-600" />
+              {lang === 'en' ? 'मराठी' : 'EN'}
+            </button>
+
             <div className="hidden sm:flex flex-col items-end mr-4">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Student</span>
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t.customer}</span>
               <span className="text-xs font-black text-slate-900">{user.name}</span>
             </div>
-            <a href="https://www.instagram.com/kunalgandole5" target="_blank" className="p-2 text-slate-400 hover:text-blue-600 transition-colors">
-              <Instagram size={20} />
+
+            <a href="tel:8007256435" className="p-2 bg-blue-50 text-blue-600 rounded-full hover:bg-blue-600 hover:text-white transition-colors">
+              <Phone size={20} />
             </a>
           </div>
         </div>
       </header>
 
-      <section className="bg-white pt-20 pb-16 px-4 border-b border-slate-50">
+      {/* Mobile Language Switcher (Visible only on small screens below header) */}
+      <div className="md:hidden flex justify-end px-4 py-2 bg-slate-50 border-b border-slate-100">
+        <button
+          onClick={toggleLanguage}
+          className="flex bg-white text-slate-800 px-3 py-1 rounded-full font-bold text-xs transition-all items-center gap-1.5 border border-slate-200 shadow-sm"
+        >
+          <Languages size={12} className="text-blue-600" />
+          {lang === 'en' ? 'मराठी मध्ये बदला' : 'Switch to English'}
+        </button>
+      </div>
+
+      <section className="bg-white pt-10 pb-16 px-4 border-b border-slate-50">
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 text-blue-700 rounded-full text-xs font-black uppercase tracking-widest mb-8 border border-blue-100">
-            <User size={14} className="fill-blue-700" /> Welcome back, {user.name.split(" ")[0]}!
+            <User size={14} className="fill-blue-700" /> {t.welcome}, {user.name.split(" ")[0]}!
           </div>
-          <h2 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter mb-6 leading-[1.1]">
-            Scale Your Business <span className="text-blue-600 underline decoration-blue-200 underline-offset-8">with Meta Ads!</span>
+          <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter mb-6 leading-[1.1]">
+            {t.heroTitle} <br />
+            <span className="text-blue-600 underline decoration-blue-200 underline-offset-8">{t.heroSubtitle}</span>
           </h2>
           <p className="text-slate-500 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10 font-medium">
-            Learn the secrets of professional Facebook marketing from TechManager and start generating 50+ high-quality leads daily.
+            {t.heroDesc}
           </p>
         </div>
       </section>
 
       <main className="max-w-4xl mx-auto w-full px-4 py-16 flex-grow">
-        <div className="max-w-md mx-auto relative group mb-20">
-          <div className="absolute -inset-[1px] bg-gradient-to-tr from-[#FFD600] via-[#FF0069] to-[#7638FA] rounded-[2.5rem] opacity-50 group-hover:opacity-100 transition duration-500"></div>
+        {/* Contact Card */}
+        <div className="max-w-md mx-auto relative group mb-20 text-center">
+          <div className="absolute -inset-[1px] bg-gradient-to-tr from-blue-400 via-cyan-400 to-indigo-500 rounded-[2.5rem] opacity-50 group-hover:opacity-100 transition duration-500"></div>
           <div className="relative bg-white rounded-[2.5rem] p-10 flex flex-col items-center text-center shadow-xl">
-            <div className="w-20 h-20 bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888]/10 rounded-3xl flex items-center justify-center mb-6 shadow-inner border border-slate-100">
+            <div className="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center mb-6 shadow-inner border border-slate-100">
               <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center">
-                <Instagram size={40} className="text-[#bc1888]" />
+                <Phone size={32} className="text-blue-600" />
               </div>
             </div>
-            <h3 className="text-3xl font-black text-slate-900 tracking-tight mb-4 leading-tight">Stay Connected</h3>
-            <p className="text-slate-500 text-sm font-medium mb-8">
-              Join <span className="text-slate-900 font-black">10,000+ students</span> for daily Meta Ads updates!
+            <h3 className="text-3xl font-black text-slate-900 tracking-tight mb-2 leading-tight">{t.contactPerson}</h3>
+            <p className="text-slate-500 text-sm font-medium mb-6">
+              {t.callUs}
             </p>
-            <a href="https://www.instagram.com/kunalgandole5" target="_blank" rel="noopener noreferrer" className="w-full bg-gradient-to-r from-[#833ab4] via-[#fd1d1d] to-[#fcb045] text-white py-4 px-6 rounded-2xl font-black text-sm uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg flex items-center justify-center gap-3">
-              Follow @kunalgandole5 <ArrowRight size={18} />
+            <a href="tel:8007256435" className="w-full bg-slate-900 text-white py-4 px-6 rounded-2xl font-black text-sm uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg flex items-center justify-center gap-3 mb-4">
+              <Phone size={18} /> 8007256435
             </a>
+
+            <div className="flex items-center justify-center gap-4 mt-4">
+              <a href="https://www.instagram.com/kunalgandole5" target="_blank" className="p-3 bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 rounded-xl text-white shadow-lg  hover:scale-110 transition-transform">
+                <Instagram size={24} />
+              </a>
+              <a href="https://www.facebook.com/" target="_blank" className="p-3 bg-blue-600 rounded-xl text-white shadow-lg hover:scale-110 transition-transform">
+                <Facebook size={24} />
+              </a>
+            </div>
           </div>
         </div>
 
         <div className="space-y-12 mb-20">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="text-2xl font-black text-slate-900">Course Modules</h3>
+            <h3 className="text-2xl font-black text-slate-900">{t.ourServices}</h3>
             <div className="h-px bg-slate-100 flex-grow mx-6"></div>
           </div>
           {courses.map(course => {
-            const status = checkLockStatus(course.id);
-            const isLocked = status.isLocked;
-
             return (
               <div key={course.id} className="relative">
-                <div className={`bg-white rounded-[2.5rem] shadow-sm border border-slate-200 overflow-hidden flex flex-col md:flex-row gap-0 group transition-all ${isLocked ? "opacity-80" : "hover:shadow-2xl hover:border-blue-200"}`}>
+                <div className={`bg-white rounded-[2.5rem] shadow-sm border border-slate-200 overflow-hidden flex flex-col md:flex-row gap-0 group transition-all hover:shadow-2xl hover:border-blue-200`}>
+                  {/* Image Display Section */}
                   <div
-                    className="md:w-2/5 relative overflow-hidden bg-slate-900 aspect-video md:aspect-auto cursor-pointer"
-                    onClick={() => !isLocked && course.videoUrl && handlePlay(course.id, course.videoUrl)}
+                    className="md:w-2/5 relative overflow-hidden bg-slate-100 aspect-[4/3] md:aspect-auto cursor-pointer"
+                    onClick={() => handleViewImage(course.thumbnailUrl)}
                   >
-                    {course.thumbnailUrl ? (
-                      <img src={course.thumbnailUrl} alt={course.title} className={`w-full h-full object-cover transition-all duration-700 ${isLocked ? "grayscale opacity-50" : "opacity-90 group-hover:opacity-100 group-hover:scale-105"}`} />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-slate-700">
-                        <Video size={48} />
-                      </div>
-                    )}
+                    <img
+                      src={course.thumbnailUrl}
+                      alt={course[`title_${lang}`]}
+                      className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110`}
+                    />
 
-                    {isLocked && (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/40 backdrop-blur-[2px]">
-                        <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 shadow-2xl mb-3">
-                          <Lock size={24} className="text-white" />
-                        </div>
-                        <span className="text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 bg-slate-900/60 rounded-full border border-white/10">Content Locked</span>
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 bg-black/20">
+                      <div className="w-16 h-16 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-2xl">
+                        <ImageIcon size={24} className="text-blue-600" />
                       </div>
-                    )}
-
-                    {!isLocked && (
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        <div className="w-20 h-20 bg-blue-600/90 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 shadow-2xl">
-                          <Play size={28} className="text-white fill-white ml-1" />
-                        </div>
-                      </div>
-                    )}
+                    </div>
 
                     <div className="absolute top-4 left-4">
                       <div className="px-3 py-1 bg-white/90 backdrop-blur-sm border border-slate-200 rounded-full flex items-center gap-1.5 shadow-sm">
-                        <Sparkles size={12} className={isLocked ? "text-slate-400" : "text-green-600"} />
-                        <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Premium Content</span>
+                        <Sparkles size={12} className="text-green-600" />
+                        <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">{t.gallery}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="md:w-3/5 p-10 flex flex-col justify-between">
+                  <div className="md:w-3/5 p-8 md:p-10 flex flex-col justify-between">
                     <div>
                       <div className="flex items-center justify-between mb-4">
-                        <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${isLocked ? "text-slate-400" : "text-blue-600"}`}>
-                          {course.category}
+                        <span className={`text-[10px] font-black uppercase tracking-[0.2em] text-blue-600`}>
+                          {course[`category_${lang}`]}
                         </span>
                         <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400">
-                          <Clock size={12} /> {course.duration || "1 Hour"}
+                          <CheckCircle2 size={12} /> {course[`duration_${lang}`]}
                         </div>
                       </div>
 
-                      <h3 className={`text-2xl font-black leading-tight mb-2 transition-colors ${isLocked ? "text-slate-400" : "text-slate-900 group-hover:text-blue-600"}`}>
-                        {course.title}
+                      <h3 className={`text-2xl font-black leading-tight mb-2 transition-colors text-slate-900 group-hover:text-blue-600`}>
+                        {course[`title_${lang}`]}
                       </h3>
 
                       <div className="flex gap-1 mb-4">
                         {[1, 2, 3, 4, 5].map(star => (
                           <button
                             key={star}
-                            onClick={() => !isLocked && handleRating(course.id, star)}
-                            className={`focus:outline-none transition-transform ${isLocked ? "cursor-default" : "active:scale-90"}`}
+                            onClick={() => handleRating(course.id, star)}
+                            className={`focus:outline-none transition-transform active:scale-90`}
                             aria-label={`Rate ${star} stars`}
                           >
-                            <Star size={18} className={`transition-colors ${star <= course.rating ? (isLocked ? "fill-slate-300 text-slate-300" : "fill-yellow-400 text-yellow-400") : "text-slate-200"}`} />
+                            <Star size={18} className={`transition-colors ${star <= course.rating ? "fill-yellow-400 text-yellow-400" : "text-slate-200"}`} />
                           </button>
                         ))}
                       </div>
 
-                      <p className={`text-sm leading-relaxed font-medium line-clamp-3 ${isLocked ? "text-slate-300" : "text-slate-500"}`}>
-                        {course.summary}
+                      <p className={`text-sm leading-relaxed font-medium line-clamp-3 text-slate-500`}>
+                        {course[`summary_${lang}`]}
                       </p>
                     </div>
 
-                    <div className="mt-8">
-                      {!isLocked && (
-                        <div className="mb-6 flex items-center gap-3 bg-amber-50 border border-amber-100 p-4 rounded-2xl">
-                          <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center text-white animate-pulse">
-                            <Info size={16} />
-                          </div>
-                          <div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.1em] text-amber-900 mb-0.5">Important Access Note</p>
-                            <p className="text-xs font-bold text-amber-700">
-                              This recording is available for <span className="underline decoration-amber-300 underline-offset-2">30 days only</span> from today.
-                            </p>
-                          </div>
+                    <div className="mt-6 md:mt-8">
+                      <div className="mb-4 flex items-center gap-3 bg-amber-50 border border-amber-100 p-3 rounded-xl">
+                        <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center text-white flex-shrink-0 animate-pulse">
+                          <Info size={14} />
                         </div>
-                      )}
+                        <div>
+                          <p className="text-[10px] font-black uppercase tracking-[0.1em] text-amber-900 mb-0.5">{t.freeInspection}</p>
+                          <p className="text-xs font-bold text-amber-700">
+                            {t.bookVisit}
+                          </p>
+                        </div>
+                      </div>
 
-                      <div className="flex items-center justify-between pt-6 border-t border-slate-50">
-                        <div className={`flex items-center gap-2 ${isLocked ? "text-slate-300" : "text-slate-500"}`}>
-                          <CalendarDays size={14} />
+                      <div className="flex items-center justify-between pt-4 border-t border-slate-50">
+                        <div className={`flex items-center gap-2 text-slate-500`}>
+                          <Clock size={14} />
                           <span className="text-[10px] font-black uppercase tracking-widest">
-                            {isLocked ? status.label || "Upcoming" : "30 Days Access"}
+                            {t.available247}
                           </span>
                         </div>
 
-                        {course.videoUrl && (
-                          <button
-                            onClick={() => handlePlay(course.id, course.videoUrl)}
-                            className={`px-8 py-4 rounded-2xl flex items-center gap-3 text-xs font-black uppercase tracking-widest transition-all shadow-xl active:scale-95 ${isLocked ? "bg-slate-100 text-slate-400 cursor-not-allowed shadow-none" : "bg-slate-900 text-white hover:bg-blue-600 shadow-slate-200"}`}
-                          >
-                            {isLocked ? "Locked" : "Watch Now"}
-                            {!isLocked && <Play size={14} className="fill-white" />}
-                            {isLocked && <Lock size={14} />}
-                          </button>
-                        )}
+                        <button
+                          onClick={() => handleViewImage(course.thumbnailUrl)}
+                          className={`px-6 py-3 rounded-xl flex items-center gap-2 text-xs font-black uppercase tracking-widest transition-all shadow-lg active:scale-95 bg-slate-900 text-white hover:bg-blue-600 shadow-slate-200`}
+                        >
+                          {t.viewImage}
+                          <ImageIcon size={14} className="text-white" />
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -470,7 +509,7 @@ function App() {
             <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-100">
               <MessageSquare size={24} />
             </div>
-            <h3 className="text-3xl font-black text-slate-900 tracking-tight">विद्यार्थ्यांच्या प्रतिक्रिया</h3>
+            <h3 className="text-3xl font-black text-slate-900 tracking-tight">{t.testimonialsTitle}</h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
@@ -482,7 +521,7 @@ function App() {
                   </div>
                   <div>
                     <h4 className="font-black text-slate-900 text-sm leading-none mb-1">{testimonial.name}</h4>
-                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{testimonial.time}</span>
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{testimonial[`time_${lang}`]}</span>
                   </div>
                 </div>
                 <div className="flex gap-0.5 mb-4">
@@ -490,7 +529,7 @@ function App() {
                     <Star key={star} size={14} className="fill-yellow-400 text-yellow-400" />
                   ))}
                 </div>
-                <p className="text-slate-600 text-sm font-medium leading-relaxed italic">"{testimonial.text}"</p>
+                <p className="text-slate-600 text-sm font-medium leading-relaxed italic">"{testimonial[`text_${lang}`]}"</p>
               </div>
             ))}
           </div>
@@ -500,11 +539,11 @@ function App() {
               <Quote size={120} />
             </div>
             <div className="relative z-10 max-w-2xl">
-              <h4 className="text-3xl font-black mb-4">तुमची प्रतिक्रिया द्या</h4>
+              <h4 className="text-3xl font-black mb-4">{t.sendEnquiry}</h4>
               <textarea
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
-                placeholder="तुमचा अनुभव येथे लिहा..."
+                placeholder={t.enquiryPlaceholder}
                 className="w-full bg-slate-800 border border-slate-700 rounded-2xl p-6 text-white placeholder-slate-500 mb-6 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all min-h-[120px] resize-none"
               />
               <button
@@ -512,7 +551,7 @@ function App() {
                 disabled={!feedback.trim()}
                 className="inline-flex items-center gap-3 bg-green-500 hover:bg-green-400 disabled:opacity-50 text-slate-900 font-black uppercase tracking-widest text-xs px-10 py-5 rounded-2xl transition-all active:scale-95"
               >
-                व्हॉट्सॲपवर पाठवा <Send size={16} />
+                {t.sendWhatsapp} <Send size={16} />
               </button>
             </div>
           </div>

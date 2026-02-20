@@ -10,9 +10,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'TechManager School',
-        short_name: 'TechManager',
-        description: 'Scale Your Business with Meta Ads!',
+        name: 'Saikrupa Waterproofing Services',
+        short_name: 'Saikrupa Services',
+        description: 'Best Waterproofing Services in Town',
         theme_color: '#ffffff',
         background_color: '#ffffff',
         display: 'standalone',
