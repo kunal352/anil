@@ -22,9 +22,9 @@ import {
 // Translations
 const translations = {
   en: {
-    title: "Saikrupa Waterproofing",
+    title: "Saikrupa Waterproofing Services",
     welcome: "Welcome back",
-    loginTitle: "Saikrupa Waterproofing",
+    loginTitle: "Saikrupa Waterproofing Services",
     loginSubtitle: "Please enter your details to continue.",
     fullName: "Full Name",
     mobileNumber: "Mobile Number",
@@ -49,9 +49,9 @@ const translations = {
     customer: "Customer"
   },
   mr: {
-    title: "साईकृपा वॉटरप्रूफिंग",
+    title: "साईकृपा वॉटरप्रूफिंग सर्विसेस",
     welcome: "स्वागत आहे",
-    loginTitle: "साईकृपा वॉटरप्रूफिंग",
+    loginTitle: "साईकृपा वॉटरप्रूफिंग सर्विसेस",
     loginSubtitle: "कृपया पुढे जाण्यासाठी आपली माहिती भरा.",
     fullName: "पूर्ण नाव",
     mobileNumber: "मोबाईल नंबर",
@@ -212,7 +212,7 @@ function App() {
   const handleWhatsApp = () => {
     if (!feedback.trim()) return;
     const phone = "8007256435";
-    const text = encodeURIComponent(`नमस्ते साईकृपा वॉटरप्रूफिंग, मी ${user?.name}. माझी प्रतिक्रिया/चौकशी: ${feedback}`);
+    const text = encodeURIComponent(`नमस्ते साईकृपा वॉटरप्रूफिंग सर्विसेस, मी ${user?.name}. माझी प्रतिक्रिया/चौकशी: ${feedback}`);
     window.open(`https://wa.me/${phone}?text=${text}`, "_blank");
   };
 
