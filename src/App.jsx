@@ -322,8 +322,8 @@ function App() {
 
       <header className="bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-lg">S</div>
+          <div className="flex items-center gap-4 animate-in fade-in slide-in-from-top duration-700">
+            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-lg float-animation">S</div>
             <h1 className="text-xl font-black text-slate-900 tracking-tight">{t.title}</h1>
           </div>
           <div className="flex items-center gap-4">
@@ -361,14 +361,14 @@ function App() {
 
       <section className="bg-white pt-10 pb-16 px-4 border-b border-slate-50">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 text-blue-700 rounded-full text-xs font-black uppercase tracking-widest mb-8 border border-blue-100">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 text-blue-700 rounded-full text-xs font-black uppercase tracking-widest mb-8 border border-blue-100 animate-in fade-in slide-in-from-top duration-700">
             <User size={14} className="fill-blue-700" /> {t.welcome}, {user.name.split(" ")[0]}!
           </div>
-          <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter mb-6 leading-[1.1]">
+          <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter mb-6 leading-[1.1] animate-in fade-in slide-in-from-bottom duration-700 delay-100">
             {t.heroTitle} <br />
             <span className="text-blue-600 underline decoration-blue-200 underline-offset-8">{t.heroSubtitle}</span>
           </h2>
-          <p className="text-slate-500 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10 font-medium">
+          <p className="text-slate-500 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10 font-medium animate-in fade-in slide-in-from-bottom duration-700 delay-200">
             {t.heroDesc}
           </p>
         </div>
@@ -408,9 +408,9 @@ function App() {
             <h3 className="text-2xl font-black text-slate-900">{t.ourServices}</h3>
             <div className="h-px bg-slate-100 flex-grow mx-6"></div>
           </div>
-          {courses.map(course => {
+          {courses.map((course, index) => {
             return (
-              <div key={course.id} className="relative">
+              <div key={course.id} className={`relative animate-in fade-in slide-in-from-bottom duration-700 delay-${(index + 1) * 100}`}>
                 <div className={`bg-white rounded-[2.5rem] shadow-sm border border-slate-200 overflow-hidden flex flex-col md:flex-row gap-0 group transition-all hover:shadow-2xl hover:border-blue-200`}>
                   {/* Image Display Section */}
                   <div

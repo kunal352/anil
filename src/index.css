@@ -2,33 +2,83 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    @apply font-outfit text-slate-900;
+  }
+}
+
 @layer utilities {
   .animate-in {
     animation-name: enter;
-    animation-duration: 150ms;
-    --tw-enter-opacity: initial;
-    --tw-enter-scale: initial;
-    --tw-enter-rotate: initial;
-    --tw-enter-translate-x: initial;
-    --tw-enter-translate-y: initial;
+    animation-duration: 0.6s;
+    animation-fill-mode: both;
+    --tw-enter-opacity: 1;
+    --tw-enter-scale: 1;
+    --tw-enter-rotate: 0deg;
+    --tw-enter-translate-x: 0;
+    --tw-enter-translate-y: 0;
   }
+
   .fade-in {
     --tw-enter-opacity: 0;
   }
+
   .zoom-in {
     --tw-enter-scale: 0.95;
   }
-  .zoom-in-95 {
-    --tw-enter-scale: 0.95;
+
+  .slide-in-from-bottom {
+    --tw-enter-translate-y: 20px;
   }
-  .slide-in-from-bottom-4 {
-    --tw-enter-translate-y: 1rem;
+
+  .slide-in-from-top {
+    --tw-enter-translate-y: -20px;
   }
-  
+
+  .delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+
+  .delay-500 {
+    animation-delay: 500ms;
+  }
+
   @keyframes enter {
     from {
       opacity: var(--tw-enter-opacity, 1);
       transform: translate(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0)) rotate(var(--tw-enter-rotate, 0)) scale(var(--tw-enter-scale, 1));
+    }
+
+    to {
+      opacity: 1;
+      transform: translate(0, 0) rotate(0) scale(1);
+    }
+  }
+
+  .float-animation {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
+
+    100% {
+      transform: translateY(0px);
     }
   }
 }
