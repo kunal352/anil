@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .animate-in {
+    animation-name: enter;
+    animation-duration: 150ms;
+    --tw-enter-opacity: initial;
+    --tw-enter-scale: initial;
+    --tw-enter-rotate: initial;
+    --tw-enter-translate-x: initial;
+    --tw-enter-translate-y: initial;
+  }
+  .fade-in {
+    --tw-enter-opacity: 0;
+  }
+  .zoom-in {
+    --tw-enter-scale: 0.95;
+  }
+  .zoom-in-95 {
+    --tw-enter-scale: 0.95;
+  }
+  .slide-in-from-bottom-4 {
+    --tw-enter-translate-y: 1rem;
+  }
+  
+  @keyframes enter {
+    from {
+      opacity: var(--tw-enter-opacity, 1);
+      transform: translate(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0)) rotate(var(--tw-enter-rotate, 0)) scale(var(--tw-enter-scale, 1));
+    }
+  }
+}
