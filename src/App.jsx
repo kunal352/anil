@@ -123,8 +123,8 @@ const servicesData = [
     category_en: "Wall Care",
     category_mr: "भिंत काळजी",
     thumbnailUrl: "https://www.mripl.net/wp-content/uploads/2024/05/Waterproofing-Contractors.jpg",
-    duration_en: "5 Year Warranty",
-    duration_mr: "५ वर्षे गॅरंटी",
+    duration_en: "10 Year Warranty",
+    duration_mr: "१० वर्षे गॅरंटी",
     dateAdded: "2024-01-01T00:02:00Z"
   },
   {
@@ -165,8 +165,8 @@ const testimonialsData = [
   {
     name: "अनिल गाढे",
     initials: "AG",
-    text_en: "Timely and professional work. The material used is very good. Gave a 5-year guarantee which increased trust.",
-    text_mr: "वेळेवर आणि प्रोफेशनल काम. यांनी वापरलेले मटेरिअल खूप चांगले आहे. 5 वर्षांची गॅरंटी दिली आहे ज्यामुळे विश्वास वाढला.",
+    text_en: "Timely and professional work. The material used is very good. Gave a 10-year guarantee which increased trust.",
+    text_mr: "वेळेवर आणि प्रोफेशनल काम. यांनी वापरलेले मटेरिअल खूप चांगले आहे. १० वर्षांची गॅरंटी दिली आहे ज्यामुळे विश्वास वाढला.",
     time_en: "Satisfied Customer",
     time_mr: "समाधानी ग्राहक"
   }
