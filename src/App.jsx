@@ -16,8 +16,15 @@ import {
   CheckCircle2,
   Image as ImageIcon,
   Facebook,
-  Languages
+  Languages,
+  MapPin
 } from 'lucide-react';
+
+// Configuration
+const CONFIG = {
+  mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3783.389426425339!2d73.8544!3d18.5196!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2c0094896791b%3A0x6fb8785a9bc6f69!2sPune%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1708510000000!5m2!1sen!2sin",
+  whatsappPhone: "918007256435"
+};
 
 // Translations
 const translations = {
@@ -46,7 +53,9 @@ const translations = {
     bookVisit: "Book a Free Site Visit today.",
     premiumQuality: "Premium Quality",
     gallery: "Gallery",
-    customer: "Customer"
+    customer: "Customer",
+    ourLocation: "Our Location",
+    visitUs: "Visit us at our site/office"
   },
   mr: {
     title: "साईकृपा वॉटरप्रूफिंग सर्विसेस",
@@ -73,7 +82,9 @@ const translations = {
     bookVisit: "आजच मोफत व्हिजिट बुक करा.",
     premiumQuality: "उत्तम दर्जा",
     gallery: "गॅलरी",
-    customer: "ग्राहक"
+    customer: "ग्राहक",
+    ourLocation: "आमचे ठिकाण",
+    visitUs: "आमच्या ऑफिस/जागेला भेट द्या"
   }
 };
 
@@ -557,6 +568,31 @@ function App() {
                 {t.sendWhatsapp} <Send size={16} />
               </button>
             </div>
+          </div>
+        </div>
+
+        {/* Map Section */}
+        <div className="mt-24 mb-16 animate-in fade-in slide-in-from-bottom duration-700 delay-500">
+          <div className="flex items-center gap-4 mb-10">
+            <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-100">
+              <MapPin size={24} />
+            </div>
+            <div>
+              <h3 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-2">{t.ourLocation}</h3>
+              <p className="text-sm font-medium text-slate-400 uppercase tracking-widest">{t.visitUs}</p>
+            </div>
+          </div>
+          
+          <div className="w-full h-[400px] rounded-[3rem] overflow-hidden border-8 border-white shadow-2xl relative group">
+            <iframe
+              title="Google Map"
+              src={CONFIG.mapEmbedUrl}
+              className="w-full h-full border-0 grayscale-[0.2] contrast-[1.1] group-hover:grayscale-0 transition-all duration-700"
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe>
+            <div className="absolute inset-0 pointer-events-none border-[1px] border-slate-200 rounded-[3rem]"></div>
           </div>
         </div>
       </main>
