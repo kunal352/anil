@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://anil-gadhe-saikrupa-waterproofing-sigma.vercel.app/sitemap.xml
+Sitemap: https://anil-gadhe-saikrupa-waterproofing-service.vercel.app/sitemap.xml
