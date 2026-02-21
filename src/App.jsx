@@ -301,30 +301,37 @@ function App() {
         <div className={`absolute -top-40 -left-40 w-96 h-96 ${theme === 'dark' ? 'bg-blue-900/20' : 'bg-blue-100'} rounded-full blur-3xl opacity-60`}></div>
         <div className={`absolute -bottom-40 -right-40 w-96 h-96 ${theme === 'dark' ? 'bg-indigo-900/20' : 'bg-indigo-100'} rounded-full blur-3xl opacity-60`}></div>
 
-        {/* Theme & Language Switcher Login Page */}
-        <div className="absolute top-6 right-6 z-50 flex gap-3">
-          <button
-            onClick={toggleTheme}
-            className="p-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md rounded-full shadow-md border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200"
-          >
-            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
-          </button>
-          <button
-            onClick={toggleLanguage}
-            className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md hover:bg-white dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 px-4 py-2 rounded-full font-bold shadow-md transition-all flex items-center gap-2 border border-slate-200 dark:border-slate-700"
-          >
-            <Languages size={18} className="text-blue-600" />
-            {lang === 'en' ? 'मराठी' : 'English'}
-          </button>
+        {/* Top bar for Logo, Theme & Language toggles */}
+        <div className="absolute top-0 left-0 w-full p-4 md:p-6 flex justify-between items-center z-50">
+          <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-lg md:text-xl shadow-lg shadow-blue-200 dark:shadow-none">
+            S
+          </div>
+          <div className="flex gap-2 md:gap-3">
+            <button
+              onClick={toggleTheme}
+              aria-label="Toggle Theme"
+              className="p-2.5 md:p-3 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 hover:bg-slate-50 transition-all active:scale-90"
+            >
+              {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+            </button>
+            <button
+              onClick={toggleLanguage}
+              className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 px-4 py-2 rounded-2xl font-bold shadow-sm transition-all flex items-center gap-2 border border-slate-200 dark:border-slate-700 active:scale-95"
+            >
+              <Languages size={18} className="text-blue-600" />
+              <span className="text-xs md:text-sm">{lang === 'en' ? 'मराठी' : 'English'}</span>
+            </button>
+          </div>
         </div>
 
         <div className="w-full max-w-xl relative">
-          <div className="text-center mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl mx-auto mb-6 shadow-xl shadow-blue-200">
-              S
-            </div>
-            <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-3">{t.loginTitle}</h1>
-            <p className="text-slate-500 dark:text-slate-400 font-medium">{t.loginSubtitle}</p>
+          <div className="text-center mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <h1 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight mb-3 leading-tight">
+              {t.loginTitle}
+            </h1>
+            <p className="text-slate-500 dark:text-slate-400 font-medium text-sm md:text-base">
+              {t.loginSubtitle}
+            </p>
           </div>
 
           <form onSubmit={handleLogin} className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/50 dark:border-slate-700/50 animate-in fade-in zoom-in-95 duration-500">
@@ -398,16 +405,16 @@ function App() {
       )}
 
       <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 sticky top-0 z-50 transition-colors">
-        <div className="max-w-4xl mx-auto px-4 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-4 animate-in fade-in slide-in-from-top duration-700">
+        <div className="max-w-5xl mx-auto px-4 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-3 animate-in fade-in slide-in-from-top duration-700">
             <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-lg float-animation">S</div>
-            <h1 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">{t.title}</h1>
+            <h1 className="text-lg md:text-xl font-black text-slate-900 dark:text-white tracking-tight truncate max-w-[150px] md:max-w-none">{t.title}</h1>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             {/* Theme Toggle Header */}
             <button
               onClick={toggleTheme}
-              className="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-full transition-all"
+              className="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl transition-all active:scale-90"
             >
               {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
             </button>
@@ -415,19 +422,19 @@ function App() {
             {/* Language Switcher Header */}
             <button
               onClick={toggleLanguage}
-              className="hidden md:flex bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-white px-3 py-1.5 rounded-full font-bold text-xs transition-all items-center gap-1.5 border border-slate-200 dark:border-slate-700 mr-2"
+              className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-white px-3 py-1.5 rounded-xl font-bold text-xs transition-all items-center gap-1.5 border border-slate-200 dark:border-slate-700 active:scale-95"
             >
               <Languages size={14} className="text-blue-600" />
-              {lang === 'en' ? 'मराठी' : 'EN'}
+              <span>{lang === 'en' ? 'मराठी' : 'EN'}</span>
             </button>
 
             <div className="hidden sm:flex flex-col items-end mr-4">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t.customer}</span>
-              <span className="text-xs font-black text-slate-900 dark:text-white">{user.name}</span>
+              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">{t.customer}</span>
+              <span className="text-xs font-black text-slate-900 dark:text-white truncate max-w-[80px]">{user.name}</span>
             </div>
 
-            <a href="tel:8007256435" className="p-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full hover:bg-blue-600 hover:text-white transition-colors">
-              <Phone size={20} />
+            <a href="tel:8007256435" className="p-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl hover:bg-blue-600 hover:text-white transition-colors">
+              <Phone size={18} />
             </a>
           </div>
         </div>
