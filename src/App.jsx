@@ -276,31 +276,25 @@ function App() {
   // Social Media Opener Logic
   const handleSocialOpen = (platform) => {
     const ua = navigator.userAgent;
-    const isAndroid = /Android/i.test(ua);
-    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(ua);
     const config = CONFIG[platform];
 
-    if (isAndroid) {
-      // Specifically target main app packages to avoid "Lite" versions
-      let intentUrl = "";
-      if (platform === 'instagram') {
-        intentUrl = "intent://instagram.com/_u/kunalgandole5/#Intent;package=com.instagram.android;scheme=https;end";
-      } else if (platform === 'facebook') {
-        intentUrl = "intent://facebook.com/anilgadhe/#Intent;package=com.facebook.katana;scheme=https;end";
-      }
+    if (isMobile) {
+      // Direct App Schemes
+      const appUrl = platform === 'instagram' 
+        ? "instagram://user?username=kunalgandole5" 
+        : "fb://profile/100025171787040";
       
-      if (intentUrl) {
-        window.location.href = intentUrl;
-      } else {
-        window.open(config.web, "_blank");
-      }
-    } else if (isIOS) {
-      // iOS Deep Links
-      window.location.href = config.app;
-      // Fallback for iOS
+      // Try to open the app
+      window.location.href = appUrl;
+
+      // Fallback to web version after 1.5 seconds if the app didn't open
+      // (Simplified fallback that works better across various mobile browsers)
       setTimeout(() => {
-        window.open(config.web, "_blank");
-      }, 1000);
+        if (!document.hidden) {
+          window.open(config.web, "_blank");
+        }
+      }, 1500);
     } else {
       // Desktop
       window.open(config.web, "_blank");
