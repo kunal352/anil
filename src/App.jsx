@@ -17,7 +17,13 @@ import {
   Image as ImageIcon,
   Facebook,
   Languages,
-  MapPin
+  MapPin,
+  Shield,
+  Trophy,
+  Settings,
+  Zap,
+  Mail,
+  Check
 } from 'lucide-react';
 
 // Configuration
@@ -55,7 +61,22 @@ const translations = {
     gallery: "Gallery",
     customer: "Customer",
     ourLocation: "Our Location",
-    visitUs: "Visit us at our site/office"
+    visitUs: "Visit us at our site/office",
+    whyChooseUs: "Why Choose Us?",
+    expertTeam: "Expert Team",
+    expertTeamDesc: "Professional and experienced staff for all jobs.",
+    tenYearGuarantee: "10-Year Guarantee",
+    tenYearGuaranteeDesc: "We stand behind our work for a decade.",
+    noBreaking: "No Breaking Required",
+    noBreakingDesc: "Advanced chemical solutions without damage.",
+    certifiedMaterials: "Certified Materials",
+    certifiedMaterialsDesc: "High-grade polymer & chemicals used.",
+    quickSupport: "24/7 Support",
+    quickSupportDesc: "Always here to help with your leakage issues.",
+    allRightsReserved: "All rights reserved.",
+    officeAddress: "Office Address",
+    addressDetail: "Lohare, Kasare, Sangamner, Dist. Ahmednagar",
+    quickLinks: "Quick Links"
   },
   mr: {
     title: "साईकृपा वॉटरप्रूफिंग सर्विसेस",
@@ -84,7 +105,22 @@ const translations = {
     gallery: "गॅलरी",
     customer: "ग्राहक",
     ourLocation: "आमचे ठिकाण",
-    visitUs: "आमच्या ऑफिस/जागेला भेट द्या"
+    visitUs: "आमच्या ऑफिस/जागेला भेट द्या",
+    whyChooseUs: "आम्हालाच का निवडावे?",
+    expertTeam: "तज्ञ टीम",
+    expertTeamDesc: "सर्व कामांसाठी अनुभवी आणि प्रोफेशनल टीम.",
+    tenYearGuarantee: "१० वर्षांची गॅरंटी",
+    tenYearGuaranteeDesc: "आम्ही दिलेल्या कामावर पूर्ण दशकभर ठाम आहोत.",
+    noBreaking: "तोडफोड न करता",
+    noBreakingDesc: "प्रगत केमिकलमुळे कोणत्याही नुकसानाशिवाय काम.",
+    certifiedMaterials: "प्रमाणित मटेरिअल",
+    certifiedMaterialsDesc: "उत्तम दर्जाचे पॉलिमर आणि केमिकल्सचा वापर.",
+    quickSupport: "२४/७ सपोर्ट",
+    quickSupportDesc: "तुमच्या गळती समस्यांसाठी आम्ही सदैव हजर.",
+    allRightsReserved: "सर्व हक्क राखीव.",
+    officeAddress: "ऑफिस पत्ता",
+    addressDetail: "लोहरे, कसारे, संगमनेर, जि. अहमदनगर",
+    quickLinks: "महत्वाच्या लिंक्स"
   }
 };
 
@@ -370,51 +406,76 @@ function App() {
         </button>
       </div>
 
-      <section className="bg-white pt-10 pb-16 px-4 border-b border-slate-50">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 text-blue-700 rounded-full text-xs font-black uppercase tracking-widest mb-8 border border-blue-100 animate-in fade-in slide-in-from-top duration-700">
-            <User size={14} className="fill-blue-700" /> {t.welcome}, {user.name.split(" ")[0]}!
+      <section className="relative bg-slate-50 pt-16 pb-24 px-4 overflow-hidden">
+        {/* Background Decorative Elements */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+          <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-100/50 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 -right-24 w-64 h-64 bg-indigo-100/40 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="max-w-5xl mx-auto text-center relative z-10">
+          <div className="inline-flex items-center gap-2 px-5 py-2 bg-white text-blue-700 rounded-full text-xs font-black uppercase tracking-widest mb-10 border border-blue-50 shadow-sm animate-in fade-in slide-in-from-top duration-700">
+            <Shield size={14} className="text-blue-600" /> {t.welcome}, {user.name.split(" ")[0]}!
           </div>
-          <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter mb-6 leading-[1.1] animate-in fade-in slide-in-from-bottom duration-700 delay-100">
+          <h2 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter mb-8 leading-[1.05] animate-in fade-in slide-in-from-bottom duration-700 delay-100">
             {t.heroTitle} <br />
-            <span className="text-blue-600 underline decoration-blue-200 underline-offset-8">{t.heroSubtitle}</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 underline decoration-blue-200 underline-offset-8 decoration-4">{t.heroSubtitle}</span>
           </h2>
-          <p className="text-slate-500 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10 font-medium animate-in fade-in slide-in-from-bottom duration-700 delay-200">
+          <p className="text-slate-500 text-lg md:text-2xl max-w-3xl mx-auto leading-relaxed mb-12 font-medium animate-in fade-in slide-in-from-bottom duration-700 delay-200">
             {t.heroDesc}
           </p>
+          
+          <div className="flex flex-wrap justify-center gap-6 animate-in fade-in slide-in-from-bottom duration-700 delay-300">
+            <a href="tel:918007256435" className="px-8 py-5 bg-blue-600 text-white rounded-3xl font-black text-sm uppercase tracking-widest shadow-xl shadow-blue-200 hover:scale-105 active:scale-95 transition-all flex items-center gap-3">
+              <Phone size={18} /> {t.contactPerson}
+            </a>
+            <button onClick={() => {
+              document.getElementById('services-section').scrollIntoView({ behavior: 'smooth' });
+            }} className="px-8 py-5 bg-white text-slate-900 border border-slate-200 rounded-3xl font-black text-sm uppercase tracking-widest shadow-sm hover:bg-slate-50 transition-all">
+              {t.ourServices}
+            </button>
+          </div>
         </div>
       </section>
 
-      <main className="max-w-4xl mx-auto w-full px-4 py-16 flex-grow">
-        {/* Contact Card */}
-        <div className="max-w-md mx-auto relative group mb-20 text-center">
-          <div className="absolute -inset-[1px] bg-gradient-to-tr from-blue-400 via-cyan-400 to-indigo-500 rounded-[2.5rem] opacity-50 group-hover:opacity-100 transition duration-500"></div>
-          <div className="relative bg-white rounded-[2.5rem] p-10 flex flex-col items-center text-center shadow-xl">
-            <div className="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center mb-6 shadow-inner border border-slate-100">
-              <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center">
-                <Phone size={32} className="text-blue-600" />
-              </div>
-            </div>
-            <h3 className="text-3xl font-black text-slate-900 tracking-tight mb-2 leading-tight">{t.contactPerson}</h3>
-            <p className="text-slate-500 text-sm font-medium mb-6">
-              {t.callUs}
-            </p>
-            <a href="tel:8007256435" className="w-full bg-slate-900 text-white py-4 px-6 rounded-2xl font-black text-sm uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg flex items-center justify-center gap-3 mb-4">
-              <Phone size={18} /> 8007256435
-            </a>
+      {/* Features Showcase Section */}
+      <section className="bg-white py-24 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-20">
+            <h3 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-4">{t.whyChooseUs}</h3>
+            <div className="w-24 h-1.5 bg-blue-600 mx-auto rounded-full"></div>
+          </div>
 
-            <div className="flex items-center justify-center gap-4 mt-4">
-              <a href="https://www.instagram.com/kunalgandole5" target="_blank" className="p-3 bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 rounded-xl text-white shadow-lg  hover:scale-110 transition-transform">
-                <Instagram size={24} />
-              </a>
-              <a href="https://www.facebook.com/" target="_blank" className="p-3 bg-blue-600 rounded-xl text-white shadow-lg hover:scale-110 transition-transform">
-                <Facebook size={24} />
-              </a>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="p-8 rounded-[2.5rem] bg-slate-50 border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all group">
+              <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-blue-600 shadow-sm group-hover:scale-110 transition-transform mb-6">
+                <Trophy size={28} />
+              </div>
+              <h4 className="text-xl font-black text-slate-900 mb-3">{t.tenYearGuarantee}</h4>
+              <p className="text-slate-500 font-medium leading-relaxed">{t.tenYearGuaranteeDesc}</p>
+            </div>
+
+            <div className="p-8 rounded-[2.5rem] bg-slate-50 border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all group">
+              <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-blue-600 shadow-sm group-hover:scale-110 transition-transform mb-6">
+                <Zap size={28} />
+              </div>
+              <h4 className="text-xl font-black text-slate-900 mb-3">{t.noBreaking}</h4>
+              <p className="text-slate-500 font-medium leading-relaxed">{t.noBreakingDesc}</p>
+            </div>
+
+            <div className="p-8 rounded-[2.5rem] bg-slate-50 border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all group">
+              <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-blue-600 shadow-sm group-hover:scale-110 transition-transform mb-6">
+                <Settings size={28} />
+              </div>
+              <h4 className="text-xl font-black text-slate-900 mb-3">{t.certifiedMaterials}</h4>
+              <p className="text-slate-500 font-medium leading-relaxed">{t.certifiedMaterialsDesc}</p>
             </div>
           </div>
         </div>
+      </section>
 
-        <div className="space-y-12 mb-20">
+      <main className="max-w-5xl mx-auto w-full px-4 py-16 flex-grow">
+        <div id="services-section" className="space-y-12 mb-32 pt-10">
           <div className="flex items-center justify-between mb-8">
             <h3 className="text-2xl font-black text-slate-900">{t.ourServices}</h3>
             <div className="h-px bg-slate-100 flex-grow mx-6"></div>
@@ -596,6 +657,63 @@ function App() {
           </div>
         </div>
       </main>
+
+      <footer className="bg-slate-950 text-white pt-24 pb-12 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+            <div className="lg:col-span-2">
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-xl">S</div>
+                <h4 className="text-2xl font-black tracking-tight">{t.title}</h4>
+              </div>
+              <p className="text-slate-400 font-medium leading-relaxed max-w-sm mb-10">
+                {t.heroDesc}
+              </p>
+              <div className="flex gap-5">
+                <a href="#" className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-slate-400 hover:text-white hover:bg-blue-600 transition-all">
+                  <Instagram size={20} />
+                </a>
+                <a href="#" className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-slate-400 hover:text-white hover:bg-blue-600 transition-all">
+                  <Facebook size={20} />
+                </a>
+              </div>
+            </div>
+
+            <div>
+              <h5 className="text-sm font-black uppercase tracking-[0.2em] mb-8 text-blue-500">{t.officeAddress}</h5>
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <MapPin className="text-slate-500 shrink-0" size={20} />
+                  <p className="text-slate-400 font-medium text-sm leading-relaxed">{t.addressDetail}</p>
+                </div>
+                <div className="flex gap-4">
+                  <Phone className="text-slate-500 shrink-0" size={20} />
+                  <p className="text-slate-400 font-medium text-sm leading-relaxed">+91 918007256435</p>
+                </div>
+                <div className="flex gap-4">
+                  <Mail className="text-slate-500 shrink-0" size={20} />
+                  <p className="text-slate-400 font-medium text-sm leading-relaxed">contact@saikrupa.com</p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h5 className="text-sm font-black uppercase tracking-[0.2em] mb-8 text-blue-500">{t.quickLinks}</h5>
+              <ul className="space-y-4">
+                <li><a href="#" className="text-slate-400 hover:text-white font-medium text-sm transition-colors flex items-center gap-2"><Check size={12} className="text-blue-500" /> {t.ourServices}</a></li>
+                <li><a href="#" className="text-slate-400 hover:text-white font-medium text-sm transition-colors flex items-center gap-2"><Check size={12} className="text-blue-500" /> {t.testimonialsTitle}</a></li>
+                <li><a href="#" className="text-slate-400 hover:text-white font-medium text-sm transition-colors flex items-center gap-2"><Check size={12} className="text-blue-500" /> {t.ourLocation}</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="pt-12 border-t border-slate-900 text-center">
+            <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">
+              &copy; {new Date().getFullYear()} {t.title}. {t.allRightsReserved}
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
