@@ -440,22 +440,7 @@ function App() {
         </div>
       </header>
 
-      {/* Mobile Language & Theme Switcher */}
-      <div className="md:hidden flex justify-between items-center px-4 py-2 bg-slate-50 dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
-        <button
-          onClick={toggleTheme}
-          className="p-2 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm"
-        >
-          {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
-        </button>
-        <button
-          onClick={toggleLanguage}
-          className="flex bg-white dark:bg-slate-800 text-slate-800 dark:text-white px-3 py-1 rounded-full font-bold text-xs transition-all items-center gap-1.5 border border-slate-200 dark:border-slate-700 shadow-sm"
-        >
-          <Languages size={12} className="text-blue-600" />
-          {lang === 'en' ? 'मराठी मध्ये बदला' : 'Switch to English'}
-        </button>
-      </div>
+
 
       <section className="relative bg-slate-50 dark:bg-slate-950 pt-16 pb-24 px-4 overflow-hidden transition-colors">
         {/* Background Decorative Elements */}
