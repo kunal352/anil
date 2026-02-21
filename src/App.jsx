@@ -275,32 +275,13 @@ function App() {
 
   // Social Media Opener Logic
   const handleSocialOpen = (platform) => {
-    const ua = navigator.userAgent;
-    const isAndroid = /Android/i.test(ua);
-    const isIOS = /iPhone|iPad|iPod/i.test(ua);
     const config = CONFIG[platform];
+    const ua = navigator.userAgent;
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(ua);
 
-    if (isAndroid) {
-      // Specifically target main app packages to avoid "Lite" versions
-      let intentUrl = "";
-      if (platform === 'instagram') {
-        intentUrl = "intent://instagram.com/_u/kunalgandole5/#Intent;package=com.instagram.android;scheme=https;end";
-      } else if (platform === 'facebook') {
-        intentUrl = "intent://facebook.com/anilgadhe/#Intent;package=com.facebook.katana;scheme=https;end";
-      }
-      
-      if (intentUrl) {
-        window.location.href = intentUrl;
-      } else {
-        window.open(config.web, "_blank");
-      }
-    } else if (isIOS) {
-      // iOS Deep Links
-      window.location.href = config.app;
-      // Fallback for iOS
-      setTimeout(() => {
-        window.open(config.web, "_blank");
-      }, 1000);
+    if (isMobile) {
+      // Use standard web link which modern browsers use to trigger app-open prompts
+      window.open(config.web, "_blank");
     } else {
       // Desktop
       window.open(config.web, "_blank");
