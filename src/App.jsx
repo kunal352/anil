@@ -22,7 +22,7 @@ import {
 
 // Configuration
 const CONFIG = {
-  mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3783.389426425339!2d73.8544!3d18.5196!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2c0094896791b%3A0x6fb8785a9bc6f69!2sPune%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1708510000000!5m2!1sen!2sin",
+  mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15024.1824419!2d74.204558!3d19.643336!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bdd0060939527cf%3A0xe67db5d9921b06cd!2sLohare%2C%20Maharashtra%20422605!5e0!3m2!1sen!2sin!4v1708510000000!5m2!1sen!2sin",
   whatsappPhone: "918007256435"
 };
 
