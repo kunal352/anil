@@ -273,18 +273,42 @@ function App() {
 
   const t = translations[lang];
 
-  // Social Media Opener Logic
+  // Universal Social Media Opener (Works for all Mobiles)
   const handleSocialOpen = (platform) => {
-    const config = CONFIG[platform];
     const ua = navigator.userAgent;
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(ua);
+    const isAndroid = /Android/i.test(ua);
+    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+    
+    // Links Config
+    const links = {
+      instagram: {
+        app: "instagram://user?username=kunalgandole5",
+        web: "https://www.instagram.com/kunalgandole5/"
+      },
+      facebook: {
+        app: isIOS ? "fb://profile/100025171787040" : "fb://facewebmodal/f?href=https://www.facebook.com/anilgadhe/",
+        web: "https://www.facebook.com/anilgadhe/"
+      }
+    };
 
-    if (isMobile) {
-      // Use standard web link which modern browsers use to trigger app-open prompts
-      window.open(config.web, "_blank");
+    const target = links[platform];
+
+    if (isAndroid || isIOS) {
+      // Try opening the App
+      window.location.href = target.app;
+      
+      // Fallback to Web if App is not installed or fails to open within 1.5 seconds
+      const start = Date.now();
+      const timeout = setTimeout(() => {
+        if (Date.now() - start < 2000) {
+          window.open(target.web, "_blank");
+        }
+      }, 1500);
+
+      window.addEventListener('blur', () => clearTimeout(timeout));
     } else {
-      // Desktop
-      window.open(config.web, "_blank");
+      // Desktop fallback
+      window.open(target.web, "_blank");
     }
   };
 
