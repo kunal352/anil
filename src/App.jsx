@@ -273,42 +273,37 @@ function App() {
 
   const t = translations[lang];
 
-  // Universal Social Media Opener (Works for all Mobiles)
+  // Social Media Opener Logic
   const handleSocialOpen = (platform) => {
     const ua = navigator.userAgent;
     const isAndroid = /Android/i.test(ua);
     const isIOS = /iPhone|iPad|iPod/i.test(ua);
-    
-    // Links Config
-    const links = {
-      instagram: {
-        app: "instagram://user?username=kunalgandole5",
-        web: "https://www.instagram.com/kunalgandole5/"
-      },
-      facebook: {
-        app: isIOS ? "fb://profile/100025171787040" : "fb://facewebmodal/f?href=https://www.facebook.com/anilgadhe/",
-        web: "https://www.facebook.com/anilgadhe/"
+    const config = CONFIG[platform];
+
+    if (isAndroid) {
+      // Specifically target main app packages to avoid "Lite" versions
+      let intentUrl = "";
+      if (platform === 'instagram') {
+        intentUrl = "intent://instagram.com/_u/kunalgandole5/#Intent;package=com.instagram.android;scheme=https;end";
+      } else if (platform === 'facebook') {
+        intentUrl = "intent://facebook.com/anilgadhe/#Intent;package=com.facebook.katana;scheme=https;end";
       }
-    };
-
-    const target = links[platform];
-
-    if (isAndroid || isIOS) {
-      // Try opening the App
-      window.location.href = target.app;
       
-      // Fallback to Web if App is not installed or fails to open within 1.5 seconds
-      const start = Date.now();
-      const timeout = setTimeout(() => {
-        if (Date.now() - start < 2000) {
-          window.open(target.web, "_blank");
-        }
-      }, 1500);
-
-      window.addEventListener('blur', () => clearTimeout(timeout));
+      if (intentUrl) {
+        window.location.href = intentUrl;
+      } else {
+        window.open(config.web, "_blank");
+      }
+    } else if (isIOS) {
+      // iOS Deep Links
+      window.location.href = config.app;
+      // Fallback for iOS
+      setTimeout(() => {
+        window.open(config.web, "_blank");
+      }, 1000);
     } else {
-      // Desktop fallback
-      window.open(target.web, "_blank");
+      // Desktop
+      window.open(config.web, "_blank");
     }
   };
 
