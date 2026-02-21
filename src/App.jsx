@@ -273,6 +273,40 @@ function App() {
 
   const t = translations[lang];
 
+  // Social Media Opener Logic
+  const handleSocialOpen = (platform) => {
+    const ua = navigator.userAgent;
+    const isAndroid = /Android/i.test(ua);
+    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+    const config = CONFIG[platform];
+
+    if (isAndroid) {
+      // Specifically target main app packages to avoid "Lite" versions
+      let intentUrl = "";
+      if (platform === 'instagram') {
+        intentUrl = "intent://instagram.com/_u/kunalgandole5/#Intent;package=com.instagram.android;scheme=https;end";
+      } else if (platform === 'facebook') {
+        intentUrl = "intent://facebook.com/anilgadhe/#Intent;package=com.facebook.katana;scheme=https;end";
+      }
+      
+      if (intentUrl) {
+        window.location.href = intentUrl;
+      } else {
+        window.open(config.web, "_blank");
+      }
+    } else if (isIOS) {
+      // iOS Deep Links
+      window.location.href = config.app;
+      // Fallback for iOS
+      setTimeout(() => {
+        window.open(config.web, "_blank");
+      }, 1000);
+    } else {
+      // Desktop
+      window.open(config.web, "_blank");
+    }
+  };
+
   const handleLogin = (e) => {
     e.preventDefault();
     if (name.trim() && phone.trim()) {
@@ -295,23 +329,6 @@ function App() {
 
   const handleViewImage = (imageUrl) => {
     setSelectedImage(imageUrl);
-  };
-
-  const handleSocialOpen = (platform) => {
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    const config = CONFIG[platform];
-    
-    if (isMobile) {
-      // Try to open app
-      window.location.href = config.app;
-      
-      // Fallback to web after a short delay if app doesn't open
-      setTimeout(() => {
-        window.open(config.web, "_blank");
-      }, 500);
-    } else {
-      window.open(config.web, "_blank");
-    }
   };
 
   const toggleLanguage = () => {
