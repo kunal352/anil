@@ -23,7 +23,9 @@ import {
   Settings,
   Zap,
   Mail,
-  Check
+  Check,
+  Moon,
+  Sun
 } from 'lucide-react';
 
 // Configuration
@@ -78,7 +80,9 @@ const translations = {
     allRightsReserved: "All rights reserved.",
     officeAddress: "Office Address",
     addressDetail: "Lohare, Kasare, Sangamner, Dist. Ahmednagar",
-    quickLinks: "Quick Links"
+    quickLinks: "Quick Links",
+    themeLight: "Light Mode",
+    themeDark: "Dark Mode"
   },
   mr: {
     title: "साईकृपा वॉटरप्रूफिंग सर्विसेस",
@@ -122,7 +126,9 @@ const translations = {
     allRightsReserved: "सर्व हक्क राखीव.",
     officeAddress: "ऑफिस पत्ता",
     addressDetail: "लोहरे, कसारे, संगमनेर, जि. अहमदनगर",
-    quickLinks: "महत्वाच्या लिंक्स"
+    quickLinks: "महत्वाच्या लिंक्स",
+    themeLight: "लाईट मोड",
+    themeDark: "डार्क मोड"
   }
 };
 
@@ -243,6 +249,22 @@ function App() {
     }
   }, []);
 
+  // Theme State & Logic
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === "light" ? "dark" : "light");
+  };
+
   const t = translations[lang];
 
   const handleLogin = (e) => {
@@ -275,15 +297,21 @@ function App() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 relative overflow-hidden font-inter">
-        <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-100 rounded-full blur-3xl opacity-60"></div>
-        <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-indigo-100 rounded-full blur-3xl opacity-60"></div>
+      <div className={`min-h-screen ${theme === 'dark' ? 'bg-slate-900' : 'bg-slate-50'} flex items-center justify-center p-6 relative overflow-hidden font-inter transition-colors duration-300`}>
+        <div className={`absolute -top-40 -left-40 w-96 h-96 ${theme === 'dark' ? 'bg-blue-900/20' : 'bg-blue-100'} rounded-full blur-3xl opacity-60`}></div>
+        <div className={`absolute -bottom-40 -right-40 w-96 h-96 ${theme === 'dark' ? 'bg-indigo-900/20' : 'bg-indigo-100'} rounded-full blur-3xl opacity-60`}></div>
 
-        {/* Language Switcher Login Page */}
-        <div className="absolute top-6 right-6 z-50">
+        {/* Theme & Language Switcher Login Page */}
+        <div className="absolute top-6 right-6 z-50 flex gap-3">
+          <button
+            onClick={toggleTheme}
+            className="p-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md rounded-full shadow-md border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200"
+          >
+            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+          </button>
           <button
             onClick={toggleLanguage}
-            className="bg-white/80 backdrop-blur-md hover:bg-white text-slate-800 px-4 py-2 rounded-full font-bold shadow-md transition-all flex items-center gap-2 border border-slate-200"
+            className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md hover:bg-white dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 px-4 py-2 rounded-full font-bold shadow-md transition-all flex items-center gap-2 border border-slate-200 dark:border-slate-700"
           >
             <Languages size={18} className="text-blue-600" />
             {lang === 'en' ? 'मराठी' : 'English'}
@@ -295,11 +323,11 @@ function App() {
             <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl mx-auto mb-6 shadow-xl shadow-blue-200">
               S
             </div>
-            <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-3">{t.loginTitle}</h1>
-            <p className="text-slate-500 font-medium">{t.loginSubtitle}</p>
+            <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-3">{t.loginTitle}</h1>
+            <p className="text-slate-500 dark:text-slate-400 font-medium">{t.loginSubtitle}</p>
           </div>
 
-          <form onSubmit={handleLogin} className="bg-white/70 backdrop-blur-xl p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/50 animate-in fade-in zoom-in-95 duration-500">
+          <form onSubmit={handleLogin} className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/50 dark:border-slate-700/50 animate-in fade-in zoom-in-95 duration-500">
             <div className="space-y-6">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">{t.fullName}</label>
@@ -311,7 +339,7 @@ function App() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder={lang === 'en' ? "Enter your name" : "तुमचे नाव टाका"}
-                    className="w-full bg-white border border-slate-200 rounded-2xl py-5 pl-14 pr-6 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-semibold"
+                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 dark:text-white rounded-2xl py-5 pl-14 pr-6 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-semibold"
                   />
                 </div>
               </div>
@@ -329,13 +357,13 @@ function App() {
                       setPhone(val);
                     }}
                     placeholder="Enter 10-digit number"
-                    className="w-full bg-white border border-slate-200 rounded-2xl py-5 pl-14 pr-6 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-semibold"
+                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 dark:text-white rounded-2xl py-5 pl-14 pr-6 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-semibold"
                   />
                 </div>
               </div>
 
               <div className="pt-4">
-                <button type="submit" className="w-full bg-slate-900 hover:bg-blue-600 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3 group">
+                <button type="submit" className="w-full bg-slate-900 dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-500 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3 group">
                   {t.enterWebsite} <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
@@ -352,7 +380,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#fcfcfd] relative font-inter">
+    <div className={`min-h-screen flex flex-col ${theme === 'dark' ? 'bg-slate-950' : 'bg-[#fcfcfd]'} relative font-inter transition-colors duration-300`}>
       {/* Image Modal */}
       {selectedImage && (
         <div className="fixed inset-0 z-[500] flex items-center justify-center p-0 bg-black/95 backdrop-blur-xl animate-in fade-in zoom-in duration-300" onClick={() => setSelectedImage(null)}>
@@ -369,17 +397,25 @@ function App() {
         </div>
       )}
 
-      <header className="bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50">
+      <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 sticky top-0 z-50 transition-colors">
         <div className="max-w-4xl mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-4 animate-in fade-in slide-in-from-top duration-700">
             <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-lg float-animation">S</div>
-            <h1 className="text-xl font-black text-slate-900 tracking-tight">{t.title}</h1>
+            <h1 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">{t.title}</h1>
           </div>
           <div className="flex items-center gap-4">
+            {/* Theme Toggle Header */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-full transition-all"
+            >
+              {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+            </button>
+
             {/* Language Switcher Header */}
             <button
               onClick={toggleLanguage}
-              className="hidden md:flex bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-1.5 rounded-full font-bold text-xs transition-all items-center gap-1.5 border border-slate-200 mr-2"
+              className="hidden md:flex bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-white px-3 py-1.5 rounded-full font-bold text-xs transition-all items-center gap-1.5 border border-slate-200 dark:border-slate-700 mr-2"
             >
               <Languages size={14} className="text-blue-600" />
               {lang === 'en' ? 'मराठी' : 'EN'}
@@ -387,53 +423,59 @@ function App() {
 
             <div className="hidden sm:flex flex-col items-end mr-4">
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t.customer}</span>
-              <span className="text-xs font-black text-slate-900">{user.name}</span>
+              <span className="text-xs font-black text-slate-900 dark:text-white">{user.name}</span>
             </div>
 
-            <a href="tel:8007256435" className="p-2 bg-blue-50 text-blue-600 rounded-full hover:bg-blue-600 hover:text-white transition-colors">
+            <a href="tel:8007256435" className="p-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full hover:bg-blue-600 hover:text-white transition-colors">
               <Phone size={20} />
             </a>
           </div>
         </div>
       </header>
 
-      {/* Mobile Language Switcher (Visible only on small screens below header) */}
-      <div className="md:hidden flex justify-end px-4 py-2 bg-slate-50 border-b border-slate-100">
+      {/* Mobile Language & Theme Switcher */}
+      <div className="md:hidden flex justify-between items-center px-4 py-2 bg-slate-50 dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
+        <button
+          onClick={toggleTheme}
+          className="p-2 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm"
+        >
+          {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+        </button>
         <button
           onClick={toggleLanguage}
-          className="flex bg-white text-slate-800 px-3 py-1 rounded-full font-bold text-xs transition-all items-center gap-1.5 border border-slate-200 shadow-sm"
+          className="flex bg-white dark:bg-slate-800 text-slate-800 dark:text-white px-3 py-1 rounded-full font-bold text-xs transition-all items-center gap-1.5 border border-slate-200 dark:border-slate-700 shadow-sm"
         >
           <Languages size={12} className="text-blue-600" />
           {lang === 'en' ? 'मराठी मध्ये बदला' : 'Switch to English'}
         </button>
       </div>
 
-      <section className="relative bg-slate-50 pt-16 pb-24 px-4 overflow-hidden">
+      <section className="relative bg-slate-50 dark:bg-slate-950 pt-16 pb-24 px-4 overflow-hidden transition-colors">
         {/* Background Decorative Elements */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-          <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-100/50 rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 -right-24 w-64 h-64 bg-indigo-100/40 rounded-full blur-3xl"></div>
+          <div className={`absolute -top-24 -left-24 w-96 h-96 ${theme === 'dark' ? 'bg-blue-900/20' : 'bg-blue-100/50'} rounded-full blur-3xl`}></div>
+          <div className={`absolute top-1/2 -right-24 w-64 h-64 ${theme === 'dark' ? 'bg-indigo-900/20' : 'bg-indigo-100/40'} rounded-full blur-3xl`}></div>
         </div>
 
         <div className="max-w-5xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-5 py-2 bg-white text-blue-700 rounded-full text-xs font-black uppercase tracking-widest mb-10 border border-blue-50 shadow-sm animate-in fade-in slide-in-from-top duration-700">
+          <div className="inline-flex items-center gap-2 px-5 py-2 bg-white dark:bg-slate-900 text-blue-700 dark:text-blue-400 rounded-full text-xs font-black uppercase tracking-widest mb-10 border border-blue-50 dark:border-slate-800 shadow-sm animate-in fade-in slide-in-from-top duration-700">
             <Shield size={14} className="text-blue-600" /> {t.welcome}, {user.name.split(" ")[0]}!
           </div>
-          <h2 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter mb-8 leading-[1.05] animate-in fade-in slide-in-from-bottom duration-700 delay-100">
+          <h2 className="text-5xl md:text-7xl font-black text-slate-900 dark:text-white tracking-tighter mb-8 leading-[1.05] animate-in fade-in slide-in-from-bottom duration-700 delay-100">
             {t.heroTitle} <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 underline decoration-blue-200 underline-offset-8 decoration-4">{t.heroSubtitle}</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 underline decoration-blue-200 dark:decoration-blue-900 underline-offset-8 decoration-4">{t.heroSubtitle}</span>
           </h2>
-          <p className="text-slate-500 text-lg md:text-2xl max-w-3xl mx-auto leading-relaxed mb-12 font-medium animate-in fade-in slide-in-from-bottom duration-700 delay-200">
+          <p className="text-slate-500 dark:text-slate-400 text-lg md:text-2xl max-w-3xl mx-auto leading-relaxed mb-12 font-medium animate-in fade-in slide-in-from-bottom duration-700 delay-200">
             {t.heroDesc}
           </p>
           
           <div className="flex flex-wrap justify-center gap-6 animate-in fade-in slide-in-from-bottom duration-700 delay-300">
-            <a href="tel:918007256435" className="px-8 py-5 bg-blue-600 text-white rounded-3xl font-black text-sm uppercase tracking-widest shadow-xl shadow-blue-200 hover:scale-105 active:scale-95 transition-all flex items-center gap-3">
+            <a href="tel:918007256435" className="px-8 py-5 bg-blue-600 text-white rounded-3xl font-black text-sm uppercase tracking-widest shadow-xl shadow-blue-200 dark:shadow-blue-900/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3">
               <Phone size={18} /> {t.contactPerson}
             </a>
             <button onClick={() => {
               document.getElementById('services-section').scrollIntoView({ behavior: 'smooth' });
-            }} className="px-8 py-5 bg-white text-slate-900 border border-slate-200 rounded-3xl font-black text-sm uppercase tracking-widest shadow-sm hover:bg-slate-50 transition-all">
+            }} className="px-8 py-5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 rounded-3xl font-black text-sm uppercase tracking-widest shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
               {t.ourServices}
             </button>
           </div>
@@ -441,36 +483,36 @@ function App() {
       </section>
 
       {/* Features Showcase Section */}
-      <section className="bg-white py-24 px-4">
+      <section className="bg-white dark:bg-slate-900 py-24 px-4 transition-colors">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-20">
-            <h3 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-4">{t.whyChooseUs}</h3>
-            <div className="w-24 h-1.5 bg-blue-600 mx-auto rounded-full"></div>
+            <h3 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-4">{t.whyChooseUs}</h3>
+            <div className="w-24 h-1.5 bg-blue-600 mx-auto rounded-full shadow-sm shadow-blue-500/50"></div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="p-8 rounded-[2.5rem] bg-slate-50 border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all group">
-              <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-blue-600 shadow-sm group-hover:scale-110 transition-transform mb-6">
+            <div className="p-8 rounded-[2.5rem] bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-900 hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-all group">
+              <div className="w-14 h-14 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-sm group-hover:scale-110 transition-transform mb-6">
                 <Trophy size={28} />
               </div>
-              <h4 className="text-xl font-black text-slate-900 mb-3">{t.tenYearGuarantee}</h4>
-              <p className="text-slate-500 font-medium leading-relaxed">{t.tenYearGuaranteeDesc}</p>
+              <h4 className="text-xl font-black text-slate-900 dark:text-white mb-3">{t.tenYearGuarantee}</h4>
+              <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">{t.tenYearGuaranteeDesc}</p>
             </div>
 
-            <div className="p-8 rounded-[2.5rem] bg-slate-50 border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all group">
-              <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-blue-600 shadow-sm group-hover:scale-110 transition-transform mb-6">
+            <div className="p-8 rounded-[2.5rem] bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-900 hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-all group">
+              <div className="w-14 h-14 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-sm group-hover:scale-110 transition-transform mb-6">
                 <Zap size={28} />
               </div>
-              <h4 className="text-xl font-black text-slate-900 mb-3">{t.noBreaking}</h4>
-              <p className="text-slate-500 font-medium leading-relaxed">{t.noBreakingDesc}</p>
+              <h4 className="text-xl font-black text-slate-900 dark:text-white mb-3">{t.noBreaking}</h4>
+              <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">{t.noBreakingDesc}</p>
             </div>
 
-            <div className="p-8 rounded-[2.5rem] bg-slate-50 border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all group">
-              <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-blue-600 shadow-sm group-hover:scale-110 transition-transform mb-6">
+            <div className="p-8 rounded-[2.5rem] bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-900 hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-all group">
+              <div className="w-14 h-14 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-sm group-hover:scale-110 transition-transform mb-6">
                 <Settings size={28} />
               </div>
-              <h4 className="text-xl font-black text-slate-900 mb-3">{t.certifiedMaterials}</h4>
-              <p className="text-slate-500 font-medium leading-relaxed">{t.certifiedMaterialsDesc}</p>
+              <h4 className="text-xl font-black text-slate-900 dark:text-white mb-3">{t.certifiedMaterials}</h4>
+              <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">{t.certifiedMaterialsDesc}</p>
             </div>
           </div>
         </div>
@@ -479,16 +521,16 @@ function App() {
       <main className="max-w-5xl mx-auto w-full px-4 py-16 flex-grow">
         <div id="services-section" className="space-y-12 mb-32 pt-10">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="text-2xl font-black text-slate-900">{t.ourServices}</h3>
-            <div className="h-px bg-slate-100 flex-grow mx-6"></div>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white">{t.ourServices}</h3>
+            <div className="h-px bg-slate-100 dark:bg-slate-800 flex-grow mx-6"></div>
           </div>
           {courses.map((course, index) => {
             return (
               <div key={course.id} className={`relative animate-in fade-in slide-in-from-bottom duration-700 delay-${(index + 1) * 100}`}>
-                <div className={`bg-white rounded-[2.5rem] shadow-sm border border-slate-200 overflow-hidden flex flex-col md:flex-row gap-0 group transition-all hover:shadow-2xl hover:border-blue-200`}>
+                <div className={`bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col md:flex-row gap-0 group transition-all hover:shadow-2xl dark:hover:shadow-blue-900/20 hover:border-blue-200 dark:hover:border-blue-800`}>
                   {/* Image Display Section */}
                   <div
-                    className="md:w-2/5 relative overflow-hidden bg-slate-100 aspect-[4/3] md:aspect-auto cursor-pointer"
+                    className="md:w-2/5 relative overflow-hidden bg-slate-100 dark:bg-slate-800 aspect-[4/3] md:aspect-auto cursor-pointer"
                     onClick={() => handleViewImage(course.thumbnailUrl)}
                   >
                     <img
@@ -498,15 +540,15 @@ function App() {
                     />
 
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 bg-black/20">
-                      <div className="w-16 h-16 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-2xl">
-                        <ImageIcon size={24} className="text-blue-600" />
+                      <div className="w-16 h-16 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-2xl">
+                        <ImageIcon size={24} className="text-blue-600 dark:text-blue-400" />
                       </div>
                     </div>
 
                     <div className="absolute top-4 left-4">
-                      <div className="px-3 py-1 bg-white/90 backdrop-blur-sm border border-slate-200 rounded-full flex items-center gap-1.5 shadow-sm">
+                      <div className="px-3 py-1 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-full flex items-center gap-1.5 shadow-sm">
                         <Sparkles size={12} className="text-green-600" />
-                        <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">{t.gallery}</span>
+                        <span className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-widest">{t.gallery}</span>
                       </div>
                     </div>
                   </div>
@@ -514,7 +556,7 @@ function App() {
                   <div className="md:w-3/5 p-8 md:p-10 flex flex-col justify-between">
                     <div>
                       <div className="flex items-center justify-between mb-4">
-                        <span className={`text-[10px] font-black uppercase tracking-[0.2em] text-blue-600`}>
+                        <span className={`text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400`}>
                           {course[`category_${lang}`]}
                         </span>
                         <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400">
@@ -522,7 +564,7 @@ function App() {
                         </div>
                       </div>
 
-                      <h3 className={`text-2xl font-black leading-tight mb-2 transition-colors text-slate-900 group-hover:text-blue-600`}>
+                      <h3 className={`text-2xl font-black leading-tight mb-2 transition-colors text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400`}>
                         {course[`title_${lang}`]}
                       </h3>
 
@@ -534,31 +576,31 @@ function App() {
                             className={`focus:outline-none transition-transform active:scale-90`}
                             aria-label={`Rate ${star} stars`}
                           >
-                            <Star size={18} className={`transition-colors ${star <= course.rating ? "fill-yellow-400 text-yellow-400" : "text-slate-200"}`} />
+                            <Star size={18} className={`transition-colors ${star <= course.rating ? "fill-yellow-400 text-yellow-400" : "text-slate-200 dark:text-slate-700"}`} />
                           </button>
                         ))}
                       </div>
 
-                      <p className={`text-sm leading-relaxed font-medium line-clamp-3 text-slate-500`}>
+                      <p className={`text-sm leading-relaxed font-medium line-clamp-3 text-slate-500 dark:text-slate-400`}>
                         {course[`summary_${lang}`]}
                       </p>
                     </div>
 
                     <div className="mt-6 md:mt-8">
-                      <div className="mb-4 flex items-center gap-3 bg-amber-50 border border-amber-100 p-3 rounded-xl">
+                      <div className="mb-4 flex items-center gap-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/30 p-3 rounded-xl">
                         <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center text-white flex-shrink-0 animate-pulse">
                           <Info size={14} />
                         </div>
                         <div>
-                          <p className="text-[10px] font-black uppercase tracking-[0.1em] text-amber-900 mb-0.5">{t.freeInspection}</p>
-                          <p className="text-xs font-bold text-amber-700">
+                          <p className="text-[10px] font-black uppercase tracking-[0.1em] text-amber-900 dark:text-amber-400 mb-0.5">{t.freeInspection}</p>
+                          <p className="text-xs font-bold text-amber-700 dark:text-amber-500/80">
                             {t.bookVisit}
                           </p>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between pt-4 border-t border-slate-50">
-                        <div className={`flex items-center gap-2 text-slate-500`}>
+                      <div className="flex items-center justify-between pt-4 border-t border-slate-50 dark:border-slate-800">
+                        <div className={`flex items-center gap-2 text-slate-500 dark:text-slate-400`}>
                           <Clock size={14} />
                           <span className="text-[10px] font-black uppercase tracking-widest">
                             {t.available247}
@@ -567,7 +609,7 @@ function App() {
 
                         <button
                           onClick={() => handleViewImage(course.thumbnailUrl)}
-                          className={`px-6 py-3 rounded-xl flex items-center gap-2 text-xs font-black uppercase tracking-widest transition-all shadow-lg active:scale-95 bg-slate-900 text-white hover:bg-blue-600 shadow-slate-200`}
+                          className={`px-6 py-3 rounded-xl flex items-center gap-2 text-xs font-black uppercase tracking-widest transition-all shadow-lg active:scale-95 bg-slate-900 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-500 shadow-slate-200 dark:shadow-none`}
                         >
                           {t.viewImage}
                           <ImageIcon size={14} className="text-white" />
@@ -583,21 +625,21 @@ function App() {
 
         <div className="mt-24 mb-16">
           <div className="flex items-center gap-4 mb-10">
-            <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-100">
+            <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-100 dark:shadow-blue-900/20">
               <MessageSquare size={24} />
             </div>
-            <h3 className="text-3xl font-black text-slate-900 tracking-tight">{t.testimonialsTitle}</h3>
+            <h3 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{t.testimonialsTitle}</h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {testimonialsData.map((testimonial, idx) => (
-              <div key={idx} className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 group">
+              <div key={idx} className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 group">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center text-blue-600 font-black text-sm">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-50 to-blue-100 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center text-blue-600 dark:text-blue-400 font-black text-sm">
                     {testimonial.initials}
                   </div>
                   <div>
-                    <h4 className="font-black text-slate-900 text-sm leading-none mb-1">{testimonial.name}</h4>
+                    <h4 className="font-black text-slate-900 dark:text-white text-sm leading-none mb-1">{testimonial.name}</h4>
                     <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{testimonial[`time_${lang}`]}</span>
                   </div>
                 </div>
@@ -606,12 +648,12 @@ function App() {
                     <Star key={star} size={14} className="fill-yellow-400 text-yellow-400" />
                   ))}
                 </div>
-                <p className="text-slate-600 text-sm font-medium leading-relaxed italic">"{testimonial[`text_${lang}`]}"</p>
+                <p className="text-slate-600 dark:text-slate-400 text-sm font-medium leading-relaxed italic">"{testimonial[`text_${lang}`]}"</p>
               </div>
             ))}
           </div>
 
-          <div className="bg-slate-900 rounded-[2.5rem] p-10 md:p-14 text-white relative overflow-hidden">
+          <div className="bg-slate-900 dark:bg-slate-900/50 rounded-[2.5rem] p-10 md:p-14 text-white relative overflow-hidden border border-slate-800">
             <div className="absolute top-0 right-0 p-10 opacity-10">
               <Quote size={120} />
             </div>
@@ -621,7 +663,7 @@ function App() {
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
                 placeholder={t.enquiryPlaceholder}
-                className="w-full bg-slate-800 border border-slate-700 rounded-2xl p-6 text-white placeholder-slate-500 mb-6 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all min-h-[120px] resize-none"
+                className="w-full bg-slate-800 dark:bg-slate-950 border border-slate-700 dark:border-slate-800 rounded-2xl p-6 text-white placeholder-slate-500 mb-6 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all min-h-[120px] resize-none"
               />
               <button
                 onClick={handleWhatsApp}
@@ -637,30 +679,30 @@ function App() {
         {/* Map Section */}
         <div className="mt-24 mb-16 animate-in fade-in slide-in-from-bottom duration-700 delay-500">
           <div className="flex items-center gap-4 mb-10">
-            <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-100">
+            <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-100 dark:shadow-blue-900/20">
               <MapPin size={24} />
             </div>
             <div>
-              <h3 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-2">{t.ourLocation}</h3>
+              <h3 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-none mb-2">{t.ourLocation}</h3>
               <p className="text-sm font-medium text-slate-400 uppercase tracking-widest">{t.visitUs}</p>
             </div>
           </div>
           
-          <div className="w-full h-[400px] rounded-[3rem] overflow-hidden border-8 border-white shadow-2xl relative group">
+          <div className="w-full h-[400px] rounded-[3rem] overflow-hidden border-8 border-white dark:border-slate-900 shadow-2xl relative group">
             <iframe
               title="Google Map"
               src={CONFIG.mapEmbedUrl}
-              className="w-full h-full border-0 grayscale-[0.2] contrast-[1.1] group-hover:grayscale-0 transition-all duration-700"
+              className="w-full h-full border-0 grayscale-[0.2] dark:grayscale-[0.5] contrast-[1.1] group-hover:grayscale-0 transition-all duration-700"
               allowFullScreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             ></iframe>
-            <div className="absolute inset-0 pointer-events-none border-[1px] border-slate-200 rounded-[3rem]"></div>
+            <div className="absolute inset-0 pointer-events-none border-[1px] border-slate-200 dark:border-slate-800 rounded-[3rem]"></div>
           </div>
         </div>
       </main>
 
-      <footer className="bg-slate-950 text-white pt-24 pb-12 px-4">
+      <footer className="bg-slate-950 text-white pt-24 pb-12 px-4 border-t border-slate-900">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
             <div className="lg:col-span-2">
@@ -702,7 +744,7 @@ function App() {
             <div>
               <h5 className="text-sm font-black uppercase tracking-[0.2em] mb-8 text-blue-500">{t.quickLinks}</h5>
               <ul className="space-y-4">
-                <li><a href="#" className="text-slate-400 hover:text-white font-medium text-sm transition-colors flex items-center gap-2"><Check size={12} className="text-blue-500" /> {t.ourServices}</a></li>
+                <li><a href="#services-section" className="text-slate-400 hover:text-white font-medium text-sm transition-colors flex items-center gap-2"><Check size={12} className="text-blue-500" /> {t.ourServices}</a></li>
                 <li><a href="#" className="text-slate-400 hover:text-white font-medium text-sm transition-colors flex items-center gap-2"><Check size={12} className="text-blue-500" /> {t.testimonialsTitle}</a></li>
                 <li><a href="#" className="text-slate-400 hover:text-white font-medium text-sm transition-colors flex items-center gap-2"><Check size={12} className="text-blue-500" /> {t.ourLocation}</a></li>
               </ul>
