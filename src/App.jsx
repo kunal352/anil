@@ -363,11 +363,11 @@ function App() {
               setLoginError(lang === 'en' ? "SMS failed to send. Try WhatsApp." : "SMS पाठवण्यात अडचण आली. WhatsApp वापरा.");
             }
           } else {
-            // DEV MOCK: Still transition to OTP screen so user can test the UI
+            // DEV MOCK:
             setTimeout(() => {
               setOtpSent(true);
               setTimer(30);
-              alert(`[DEV MODE]\nOTP sent to ${phone}\n\nYOUR CODE: ${code}`);
+              alert(`[IMPORTANT] मोबाईलवर मेसेज जाण्यासाठी तुम्हाला API Key टाकावा लागेल.\n\nसध्याचा OTP: ${code}\n\nKey कुठे टाकायचा? -> App.jsx मध्ये CONFIG.smsApiKey पहा.`);
             }, 1000);
           }
         } catch (error) {
