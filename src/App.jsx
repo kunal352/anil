@@ -354,19 +354,14 @@ function App() {
           const isDev = cleanApiKey === "YOUR_FAST2SMS_API_KEY" || cleanApiKey === "PASTE_YOUR_FAST2SMS_AUTHORIZATION_TOKEN_HERE" || cleanApiKey === "";
           
           if (!isDev) {
-            // Using POST method for better reliability and bypassing some GET length limits
-            const response = await fetch("https://www.fast2sms.com/dev/bulkV2", {
-              method: 'POST',
+            // Simple GET request often works better for CORS-restricted environments
+            const apiUrl = `https://www.fast2sms.com/dev/bulkV2?authorization=${cleanApiKey}&route=otp&variables_values=${code}&numbers=${phone}`;
+            
+            const response = await fetch(apiUrl, {
+              method: 'GET',
               headers: {
-                "authorization": cleanApiKey,
-                "Content-Type": "application/json",
-                "accept": "*/*"
-              },
-              body: JSON.stringify({
-                "route": "otp",
-                "variables_values": code,
-                "numbers": phone
-              })
+                "accept": "application/json"
+              }
             });
 
             const data = await response.json();
@@ -375,12 +370,10 @@ function App() {
               setOtpSent(true);
               setTimer(30);
             } else {
-              // Show specific error message from Fast2SMS if available
-              const apiMsg = data.message || "DLT/Route Error";
-              setLoginError(lang === 'en' ? `SMS Failed: ${apiMsg}. Try WhatsApp.` : `SMS फेल: ${apiMsg}. WhatsApp वापरा.`);
+              const apiMsg = data.message || "Balance/DLT Issue";
+              setLoginError(lang === 'en' ? `SMS Provider Error: ${apiMsg}` : `SMS बॅलन्स/रजिस्ट्रेशन अडचण: ${apiMsg}`);
             }
           } else {
-            // DEV MOCK:
             setTimeout(() => {
               setOtpSent(true);
               setTimer(30);
@@ -388,8 +381,8 @@ function App() {
             }, 1000);
           }
         } catch (error) {
-          console.error("SMS Fetch Error:", error);
-          setLoginError(lang === 'en' ? "System Blocked SMS. Use WhatsApp OTP instead." : "सिस्टमने मेसेज अडवला आहे. WhatsApp वापरा.");
+          console.error("SMS Error:", error);
+          setLoginError(lang === 'en' ? "SMS is blocked by browser. Please use the WhatsApp button below." : "ब्राउझरने मेसेज ब्लॉक केला आहे. कृपया खालील WhatsApp बटन वापरा.");
         } finally {
           setLoginLoading(false);
         }
