@@ -259,6 +259,7 @@ function App() {
   const [generatedOtp, setGeneratedOtp] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
   const [loginError, setLoginError] = useState("");
+  const [timer, setTimer] = useState(0);
 
   // Language State: Default 'mr' (Marathi)
   const [lang, setLang] = useState('mr');
@@ -276,6 +277,16 @@ function App() {
 
   // Theme State & Logic
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+  useEffect(() => {
+    let interval;
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [timer]);
 
   useEffect(() => {
     if (theme === "dark") {
@@ -321,7 +332,7 @@ function App() {
   };
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     setLoginError("");
 
     if (!otpSent) {
@@ -336,26 +347,31 @@ function App() {
         setGeneratedOtp(code);
 
         try {
-          // If you have a real API key, this will send a real SMS
-          if (CONFIG.smsApiKey !== "YOUR_FAST2SMS_API_KEY") {
-            const response = await fetch(`https://www.fast2sms.com/dev/bulkV2?authorization=${CONFIG.smsApiKey}&route=otp&variables_values=${code}&numbers=${phone}`);
+          // PROPER API CALL Logic
+          // We use Fast2SMS as a standard reliable gateway
+          const isDev = CONFIG.smsApiKey === "YOUR_FAST2SMS_API_KEY";
+          
+          if (!isDev) {
+            const apiUrl = `https://www.fast2sms.com/dev/bulkV2?authorization=${CONFIG.smsApiKey}&route=otp&variables_values=${code}&numbers=${phone}`;
+            const response = await fetch(apiUrl);
             const data = await response.json();
-            if (data.return) {
+            
+            if (data.return === true) {
               setOtpSent(true);
+              setTimer(30); // 30 seconds wait for resend
             } else {
-              throw new Error("SMS Limit reached or Invalid API Key");
+              setLoginError(lang === 'en' ? "SMS failed to send. Try WhatsApp." : "SMS पाठवण्यात अडचण आली. WhatsApp वापरा.");
             }
           } else {
-            // Fallback for development: Show OTP in Alert but explain why
+            // DEV MOCK: Still transition to OTP screen so user can test the UI
             setTimeout(() => {
               setOtpSent(true);
-              alert(`PROMPT: In Production, a real SMS will be sent.\n\nYOUR OTP: ${code}\n\n(To enable real SMS: Add Fast2SMS API Key in code)`);
-            }, 1500);
+              setTimer(30);
+              alert(`[DEV MODE]\nOTP sent to ${phone}\n\nYOUR CODE: ${code}`);
+            }, 1000);
           }
         } catch (error) {
-          console.error("SMS Error:", error);
-          // If SMS fails, fallback to manual alert for demo
-          setOtpSent(true);
+          setLoginError(lang === 'en' ? "Network Error! Check connection." : "नेटवर्क एरर! कनेक्शन तपासा.");
         } finally {
           setLoginLoading(false);
         }
@@ -373,6 +389,12 @@ function App() {
       } else {
         setLoginError(t.otpError);
       }
+    }
+  };
+
+  const handleResendOtp = () => {
+    if (timer === 0) {
+      handleLogin();
     }
   };
 
@@ -504,16 +526,27 @@ function App() {
                   </div>
                   
                   <div className="flex flex-col gap-3 mt-4">
-                    <button 
-                      type="button"
-                      onClick={() => {
-                        setOtpSent(false);
-                        setOtpInput("");
-                      }}
-                      className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-blue-600 transition-colors"
-                    >
-                      Change Number
-                    </button>
+                    <div className="flex justify-between items-center px-2">
+                      <button 
+                        type="button"
+                        onClick={() => {
+                          setOtpSent(false);
+                          setOtpInput("");
+                        }}
+                        className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-blue-600 transition-colors"
+                      >
+                        Change Number
+                      </button>
+                      <button 
+                        type="button"
+                        disabled={timer > 0}
+                        onClick={handleResendOtp}
+                        className={`text-[10px] font-black uppercase tracking-widest transition-colors ${timer > 0 ? 'text-slate-300' : 'text-blue-600 hover:text-blue-800'}`}
+                      >
+                        {timer > 0 ? `Resend in ${timer}s` : "Resend OTP"}
+                      </button>
+                    </div>
+                    
                     <button 
                       type="button"
                       onClick={sendOtpOnWhatsApp}
