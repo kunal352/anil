@@ -358,19 +358,33 @@ function App() {
               ? `Your OTP for Saikrupa Waterproofing is: ${code}`
               : `साईकृपा वॉटरप्रूफिंगसाठी तुमचा OTP आहे: ${code}`;
 
-            // Simple GET request bypasses many browser CORS restrictions
-            const apiUrl = `https://www.fast2sms.com/dev/bulkV2?authorization=${cleanApiKey}&route=q&message=${encodeURIComponent(message)}&language=english&numbers=${phone}`;
-            
-            // Sending request without custom headers to keep it as a 'Simple Request'
-            fetch(apiUrl, { mode: 'no-cors' }); 
+            const response = await fetch("https://www.fast2sms.com/dev/bulkV2", {
+              method: 'POST',
+              headers: {
+                "authorization": cleanApiKey,
+                "Content-Type": "application/json",
+                "accept": "*/*"
+              },
+              body: JSON.stringify({
+                "route": "q",
+                "message": message,
+                "language": "english",
+                "numbers": phone
+              })
+            });
 
-            // Since we use 'no-cors', we can't read the response, 
-            // so we assume it sent and let the user check their phone
-            setTimeout(() => {
+            const data = await response.json();
+            
+            if (data.return === true) {
               setOtpSent(true);
               setTimer(30);
-            }, 500);
-
+            } else {
+              // Extract the exact error from Fast2SMS
+              const errMsg = Array.isArray(data.message) ? data.message[0] : (data.message || "Route/Key Error");
+              setLoginError(lang === 'en' ? `SMS Failed: ${errMsg}` : `SMS फेल: ${errMsg}`);
+              // Fallback for user to check anyway if it was a temporary glitch
+              setOtpSent(true);
+            }
           } else {
             setTimeout(() => {
               setOtpSent(true);
@@ -381,7 +395,6 @@ function App() {
         } catch (error) {
           console.error("SMS Error:", error);
           setLoginError(lang === 'en' ? "Please check your mobile for OTP." : "कृपया तुमच्या मोबाईलवर मेसेज तपासा.");
-          // Fallback to OTP screen anyway
           setOtpSent(true);
         } finally {
           setLoginLoading(false);
