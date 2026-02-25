@@ -354,14 +354,24 @@ function App() {
           const isDev = cleanApiKey === "YOUR_FAST2SMS_API_KEY" || cleanApiKey === "PASTE_YOUR_FAST2SMS_AUTHORIZATION_TOKEN_HERE" || cleanApiKey === "";
           
           if (!isDev) {
-            // Simple GET request often works better for CORS-restricted environments
-            const apiUrl = `https://www.fast2sms.com/dev/bulkV2?authorization=${cleanApiKey}&route=otp&variables_values=${code}&numbers=${phone}`;
-            
-            const response = await fetch(apiUrl, {
-              method: 'GET',
+            // Switching to route='q' (Quick SMS) which often bypasses website verification
+            const message = lang === 'en' 
+              ? `Your OTP for Saikrupa Waterproofing is: ${code}`
+              : `साईकृपा वॉटरप्रूफिंगसाठी तुमचा OTP आहे: ${code}`;
+
+            const response = await fetch("https://www.fast2sms.com/dev/bulkV2", {
+              method: 'POST',
               headers: {
-                "accept": "application/json"
-              }
+                "authorization": cleanApiKey,
+                "Content-Type": "application/json",
+                "accept": "*/*"
+              },
+              body: JSON.stringify({
+                "route": "q",
+                "message": message,
+                "language": "english",
+                "numbers": phone
+              })
             });
 
             const data = await response.json();
@@ -370,19 +380,19 @@ function App() {
               setOtpSent(true);
               setTimer(30);
             } else {
-              const apiMsg = data.message || "Balance/DLT Issue";
-              setLoginError(lang === 'en' ? `SMS Provider Error: ${apiMsg}` : `SMS बॅलन्स/रजिस्ट्रेशन अडचण: ${apiMsg}`);
+              const apiMsg = data.message || "SMS Provider Blocked";
+              setLoginError(lang === 'en' ? `SMS Failed: ${apiMsg}` : `SMS पाठवता आला नाही: ${apiMsg}`);
             }
           } else {
             setTimeout(() => {
               setOtpSent(true);
               setTimer(30);
-              alert(`[IMPORTANT] मोबाईलवर मेसेज जाण्यासाठी तुम्हाला API Key टाकावा लागेल.\n\nसध्याचा OTP: ${code}\n\nKey कुठे टाकायचा? -> App.jsx मध्ये CONFIG.smsApiKey पहा.`);
+              alert(`[DEV] OTP: ${code}\nPaste your API Key in App.jsx to receive real SMS.`);
             }, 1000);
           }
         } catch (error) {
           console.error("SMS Error:", error);
-          setLoginError(lang === 'en' ? "SMS is blocked by browser. Please use the WhatsApp button below." : "ब्राउझरने मेसेज ब्लॉक केला आहे. कृपया खालील WhatsApp बटन वापरा.");
+          setLoginError(lang === 'en' ? "Connection Error. SMS Blocked." : "कनेक्शन एरर. मेसेज पाठवता आला नाही.");
         } finally {
           setLoginLoading(false);
         }
@@ -407,11 +417,6 @@ function App() {
     if (timer === 0) {
       handleLogin();
     }
-  };
-
-  const sendOtpOnWhatsApp = () => {
-    const text = encodeURIComponent(`तुमचा साईकृपा वॉटरप्रूफिंग लॉगिन OTP आहे: ${generatedOtp}`);
-    window.open(`https://wa.me/91${phone}?text=${text}`, "_blank");
   };
 
   const handleRating = (courseId, rating) => {
@@ -536,44 +541,24 @@ function App() {
                     </div>
                   </div>
                   
-                  <div className="flex flex-col gap-3 mt-4">
-                    <div className="flex justify-between items-center px-2">
-                      <button 
-                        type="button"
-                        onClick={() => {
-                          setOtpSent(false);
-                          setOtpInput("");
-                        }}
-                        className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-blue-600 transition-colors"
-                      >
-                        Change Number
-                      </button>
-                      <button 
-                        type="button"
-                        disabled={timer > 0}
-                        onClick={handleResendOtp}
-                        className={`text-[10px] font-black uppercase tracking-widest transition-colors ${timer > 0 ? 'text-slate-300' : 'text-blue-600 hover:text-blue-800'}`}
-                      >
-                        {timer > 0 ? `Resend in ${timer}s` : "Resend OTP"}
-                      </button>
-                    </div>
-                    
-                    <button 
-                      type="button"
-                      onClick={sendOtpOnWhatsApp}
-                      className="flex items-center justify-center gap-3 bg-green-600 hover:bg-green-700 text-white py-5 rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-green-200 dark:shadow-none transition-all active:scale-95 mt-2"
-                    >
-                      <MessageSquare size={18} /> Get OTP on WhatsApp
-                    </button>
+                  <div className="flex justify-between items-center px-2 mt-4">
                     <button 
                       type="button"
                       onClick={() => {
                         setOtpSent(false);
                         setOtpInput("");
                       }}
-                      className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-blue-600 transition-colors mt-2 text-center"
+                      className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-blue-600 transition-colors"
                     >
                       Change Number
+                    </button>
+                    <button 
+                      type="button"
+                      disabled={timer > 0}
+                      onClick={handleResendOtp}
+                      className={`text-[10px] font-black uppercase tracking-widest transition-colors ${timer > 0 ? 'text-slate-300' : 'text-blue-600 hover:text-blue-800'}`}
+                    >
+                      {timer > 0 ? `Resend in ${timer}s` : "Resend OTP"}
                     </button>
                   </div>
                 </div>
@@ -588,7 +573,7 @@ function App() {
               <button
                 type="submit"
                 disabled={loginLoading}
-                className={`w-full bg-slate-900 dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-500 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3 group relative overflow-hidden`}
+                className="w-full bg-slate-900 dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-500 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3 group relative overflow-hidden"
               >
                 {loginLoading && (
                   <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
