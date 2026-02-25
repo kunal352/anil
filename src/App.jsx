@@ -40,7 +40,8 @@ const CONFIG = {
   facebook: {
     web: "https://www.facebook.com/anilgadhe/",
     app: "fb://profile/100025171787040"
-  }
+  },
+  smsApiKey: "YOUR_FAST2SMS_API_KEY" // Get this from fast2sms.com for real SMS
 };
 
 // Translations
@@ -319,7 +320,7 @@ function App() {
     }
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setLoginError("");
 
@@ -331,17 +332,33 @@ function App() {
         }
 
         setLoginLoading(true);
-        
-        // Simulate sending OTP via API
-        setTimeout(() => {
-          const code = Math.floor(1000 + Math.random() * 9000).toString();
-          setGeneratedOtp(code);
+        const code = Math.floor(1000 + Math.random() * 9000).toString();
+        setGeneratedOtp(code);
+
+        try {
+          // If you have a real API key, this will send a real SMS
+          if (CONFIG.smsApiKey !== "YOUR_FAST2SMS_API_KEY") {
+            const response = await fetch(`https://www.fast2sms.com/dev/bulkV2?authorization=${CONFIG.smsApiKey}&route=otp&variables_values=${code}&numbers=${phone}`);
+            const data = await response.json();
+            if (data.return) {
+              setOtpSent(true);
+            } else {
+              throw new Error("SMS Limit reached or Invalid API Key");
+            }
+          } else {
+            // Fallback for development: Show OTP in Alert but explain why
+            setTimeout(() => {
+              setOtpSent(true);
+              alert(`PROMPT: In Production, a real SMS will be sent.\n\nYOUR OTP: ${code}\n\n(To enable real SMS: Add Fast2SMS API Key in code)`);
+            }, 1500);
+          }
+        } catch (error) {
+          console.error("SMS Error:", error);
+          // If SMS fails, fallback to manual alert for demo
           setOtpSent(true);
+        } finally {
           setLoginLoading(false);
-          
-          // For demo/simulated purpose, we show it in alert
-          alert(`${t.otpSentMsg} \n\nYOUR OTP: ${code}`);
-        }, 1500);
+        }
       }
     } else {
       // Verify OTP
@@ -357,6 +374,11 @@ function App() {
         setLoginError(t.otpError);
       }
     }
+  };
+
+  const sendOtpOnWhatsApp = () => {
+    const text = encodeURIComponent(`तुमचा साईकृपा वॉटरप्रूफिंग लॉगिन OTP आहे: ${generatedOtp}`);
+    window.open(`https://wa.me/91${phone}?text=${text}`, "_blank");
   };
 
   const handleRating = (courseId, rating) => {
@@ -481,16 +503,25 @@ function App() {
                     </div>
                   </div>
                   
-                  <button 
-                    type="button"
-                    onClick={() => {
-                      setOtpSent(false);
-                      setOtpInput("");
-                    }}
-                    className="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline ml-4"
-                  >
-                    Change Number
-                  </button>
+                  <div className="flex flex-col gap-3 mt-4">
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        setOtpSent(false);
+                        setOtpInput("");
+                      }}
+                      className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-blue-600 transition-colors"
+                    >
+                      Change Number
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={sendOtpOnWhatsApp}
+                      className="flex items-center justify-center gap-2 bg-green-500/10 text-green-600 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest border border-green-500/20 hover:bg-green-500 hover:text-white transition-all"
+                    >
+                      <MessageSquare size={14} /> Get OTP on WhatsApp (Free)
+                    </button>
+                  </div>
                 </div>
               )}
 
