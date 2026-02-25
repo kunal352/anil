@@ -41,7 +41,10 @@ const CONFIG = {
     web: "https://www.facebook.com/anilgadhe/",
     app: "fb://profile/100025171787040"
   },
-  smsApiKey: "PASTE_YOUR_FAST2SMS_AUTHORIZATION_TOKEN_HERE" 
+  // ---------------------------------------------------------
+  // खालील ओळीत तुमचा Fast2SMS 'Authorization' कोड पेस्ट करा:
+  // ---------------------------------------------------------
+  smsApiKey: "SF6b01hcqyoxDwLaZU4EzHp9dl5RrBYNjJvnWVP8GtT3Mu27CIpR7UuBvEymFNYrS6THefgkXzd8iwlW" 
 };
 
 // Translations
