@@ -561,9 +561,19 @@ function App() {
                     <button 
                       type="button"
                       onClick={sendOtpOnWhatsApp}
-                      className="flex items-center justify-center gap-2 bg-green-500/10 text-green-600 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest border border-green-500/20 hover:bg-green-500 hover:text-white transition-all"
+                      className="flex items-center justify-center gap-3 bg-green-600 hover:bg-green-700 text-white py-5 rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-green-200 dark:shadow-none transition-all active:scale-95 mt-2"
                     >
-                      <MessageSquare size={14} /> Get OTP on WhatsApp (Free)
+                      <MessageSquare size={18} /> Get OTP on WhatsApp
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        setOtpSent(false);
+                        setOtpInput("");
+                      }}
+                      className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-blue-600 transition-colors mt-2 text-center"
+                    >
+                      Change Number
                     </button>
                   </div>
                 </div>
