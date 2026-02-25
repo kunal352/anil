@@ -25,8 +25,7 @@ import {
   Mail,
   Check,
   Moon,
-  Sun,
-  Lock
+  Sun
 } from 'lucide-react';
 
 // Configuration
@@ -40,11 +39,7 @@ const CONFIG = {
   facebook: {
     web: "https://www.facebook.com/anilgadhe/",
     app: "fb://profile/100025171787040"
-  },
-  // ---------------------------------------------------------
-  // खालील ओळीत तुमचा Fast2SMS 'Authorization' कोड पेस्ट करा:
-  // ---------------------------------------------------------
-  smsApiKey: "SF6b01hcqyoxDwLaZU4EzHp9dl5RrBYNjJvnWVP8GtT3Mu27CIpR7UuBvEymFNYrS6THefgkXzd8iwlW" 
+  }
 };
 
 // Translations
@@ -93,13 +88,7 @@ const translations = {
     addressDetail: "Lohare, Kasare, Sangamner, Dist. Ahmednagar",
     quickLinks: "Quick Links",
     themeLight: "Light Mode",
-    themeDark: "Dark Mode",
-    sendOtp: "Send OTP",
-    verifyOtp: "Verify & Login",
-    enterOtp: "Enter 4-digit OTP",
-    otpSentMsg: "A 4-digit OTP has been sent to your mobile.",
-    otpError: "Invalid OTP! Please check and try again.",
-    otpLoading: "Sending OTP..."
+    themeDark: "Dark Mode"
   },
   mr: {
     title: "साईकृपा वॉटरप्रूफिंग सर्विसेस",
@@ -145,13 +134,7 @@ const translations = {
     addressDetail: "लोहरे, कसारे, संगमनेर, जि. अहमदनगर",
     quickLinks: "महत्वाच्या लिंक्स",
     themeLight: "लाईट मोड",
-    themeDark: "डार्क मोड",
-    sendOtp: "OTP पाठवा",
-    verifyOtp: "तपासा आणि लॉगिन करा",
-    enterOtp: "४-अंकी OTP टाका",
-    otpSentMsg: "तुमच्या मोबाईलवर ४-अंकी OTP पाठवला आहे.",
-    otpError: "चुकीचा OTP! कृपया पुन्हा तपासा.",
-    otpLoading: "OTP पाठवत आहे..."
+    themeDark: "डार्क मोड"
   }
 };
 
@@ -257,8 +240,6 @@ function App() {
   const [feedback, setFeedback] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [loginLoading, setLoginLoading] = useState(false);
-  const [loginError, setLoginError] = useState("");
 
   // Language State: Default 'mr' (Marathi)
   const [lang, setLang] = useState('mr');
@@ -276,8 +257,6 @@ function App() {
 
   // Theme State & Logic
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
-
-
 
   useEffect(() => {
     if (theme === "dark") {
@@ -323,29 +302,13 @@ function App() {
   };
 
   const handleLogin = (e) => {
-    if (e) e.preventDefault();
-    setLoginError("");
-
+    e.preventDefault();
     if (name.trim() && phone.trim()) {
-      if (phone.length < 10) {
-        setLoginError(lang === 'en' ? "Please enter valid 10-digit number" : "कृपया योग्य १०-अंकी नंबर टाका");
-        return;
-      }
-
-      setLoginLoading(true);
-      // Simple login timeout for effect
-      setTimeout(() => {
-        const newUser = { name, phone };
-        setUser(newUser);
-        localStorage.setItem("tm_school_user", JSON.stringify(newUser));
-        setLoginLoading(false);
-      }, 800);
-    } else {
-      setLoginError(lang === 'en' ? "Please fill all details" : "कृपया सर्व माहिती भरा");
+      const newUser = { name, phone };
+      setUser(newUser);
+      localStorage.setItem("tm_school_user", JSON.stringify(newUser));
     }
   };
-
-
 
   const handleRating = (courseId, rating) => {
     setCourses(prev => prev.map(c => c.id === courseId ? { ...c, rating } : c));
@@ -429,7 +392,6 @@ function App() {
                   <input
                     type="tel"
                     required
-                    maxLength={10}
                     value={phone}
                     onChange={(e) => {
                       const val = e.target.value.replace(/\D/g, '').slice(0, 10);
@@ -441,27 +403,11 @@ function App() {
                 </div>
               </div>
 
-              {loginError && (
-                <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 p-4 rounded-2xl text-red-600 text-xs font-bold animate-pulse">
-                  {loginError}
-                </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={loginLoading}
-                className="w-full bg-slate-900 dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-500 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3 group relative overflow-hidden"
-              >
-                {loginLoading && (
-                  <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
-                )}
-                <span className="relative z-10">
-                  {loginLoading ? t.otpLoading : t.enterWebsite}
-                </span>
-                {!loginLoading && (
-                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                )}
-              </button>
+              <div className="pt-4">
+                <button type="submit" className="w-full bg-slate-900 dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-500 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3 group">
+                  {t.enterWebsite} <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
             </div>
           </form>
 
