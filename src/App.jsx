@@ -41,7 +41,7 @@ const CONFIG = {
     web: "https://www.facebook.com/anilgadhe/",
     app: "fb://profile/100025171787040"
   },
-  smsApiKey: "YOUR_FAST2SMS_API_KEY" // Get this from fast2sms.com for real SMS
+  smsApiKey: "PASTE_YOUR_FAST2SMS_AUTHORIZATION_TOKEN_HERE" 
 };
 
 // Translations
