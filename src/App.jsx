@@ -257,12 +257,8 @@ function App() {
   const [feedback, setFeedback] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpInput, setOtpInput] = useState("");
-  const [generatedOtp, setGeneratedOtp] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
   const [loginError, setLoginError] = useState("");
-  const [timer, setTimer] = useState(0);
 
   // Language State: Default 'mr' (Marathi)
   const [lang, setLang] = useState('mr');
@@ -281,15 +277,7 @@ function App() {
   // Theme State & Logic
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
-  useEffect(() => {
-    let interval;
-    if (timer > 0) {
-      interval = setInterval(() => {
-        setTimer((prev) => prev - 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [timer]);
+
 
   useEffect(() => {
     if (theme === "dark") {
@@ -334,93 +322,30 @@ function App() {
     }
   };
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     if (e) e.preventDefault();
     setLoginError("");
 
-    if (!otpSent) {
-      if (name.trim() && phone.trim()) {
-        if (phone.length < 10) {
-          setLoginError(lang === 'en' ? "Please enter valid 10-digit number" : "कृपया योग्य १०-अंकी नंबर टाका");
-          return;
-        }
-
-        setLoginLoading(true);
-        const code = Math.floor(1000 + Math.random() * 9000).toString();
-        setGeneratedOtp(code);
-
-        try {
-          const cleanApiKey = (CONFIG.smsApiKey || "").trim();
-          const isDev = cleanApiKey === "YOUR_FAST2SMS_API_KEY" || cleanApiKey === "PASTE_YOUR_FAST2SMS_AUTHORIZATION_TOKEN_HERE" || cleanApiKey === "";
-          
-          if (!isDev) {
-            const message = lang === 'en' 
-              ? `Your OTP for Saikrupa Waterproofing is: ${code}`
-              : `साईकृपा वॉटरप्रूफिंगसाठी तुमचा OTP आहे: ${code}`;
-
-            const response = await fetch("https://www.fast2sms.com/dev/bulkV2", {
-              method: 'POST',
-              headers: {
-                "authorization": cleanApiKey,
-                "Content-Type": "application/json",
-                "accept": "*/*"
-              },
-              body: JSON.stringify({
-                "route": "q",
-                "message": message,
-                "language": "english",
-                "numbers": phone
-              })
-            });
-
-            const data = await response.json();
-            
-            if (data.return === true) {
-              setOtpSent(true);
-              setTimer(30);
-            } else {
-              // Extract the exact error from Fast2SMS
-              const errMsg = Array.isArray(data.message) ? data.message[0] : (data.message || "Route/Key Error");
-              setLoginError(lang === 'en' ? `SMS Failed: ${errMsg}` : `SMS फेल: ${errMsg}`);
-              // Fallback for user to check anyway if it was a temporary glitch
-              setOtpSent(true);
-            }
-          } else {
-            setTimeout(() => {
-              setOtpSent(true);
-              setTimer(30);
-              alert(`[DEV] OTP: ${code}\nPaste your API Key in App.jsx to receive real SMS.`);
-            }, 1000);
-          }
-        } catch (error) {
-          console.error("SMS Error:", error);
-          setLoginError(lang === 'en' ? "Please check your mobile for OTP." : "कृपया तुमच्या मोबाईलवर मेसेज तपासा.");
-          setOtpSent(true);
-        } finally {
-          setLoginLoading(false);
-        }
+    if (name.trim() && phone.trim()) {
+      if (phone.length < 10) {
+        setLoginError(lang === 'en' ? "Please enter valid 10-digit number" : "कृपया योग्य १०-अंकी नंबर टाका");
+        return;
       }
+
+      setLoginLoading(true);
+      // Simple login timeout for effect
+      setTimeout(() => {
+        const newUser = { name, phone };
+        setUser(newUser);
+        localStorage.setItem("tm_school_user", JSON.stringify(newUser));
+        setLoginLoading(false);
+      }, 800);
     } else {
-      // Verify OTP
-      if (otpInput === generatedOtp) {
-        setLoginLoading(true);
-        setTimeout(() => {
-          const newUser = { name, phone };
-          setUser(newUser);
-          localStorage.setItem("tm_school_user", JSON.stringify(newUser));
-          setLoginLoading(false);
-        }, 800);
-      } else {
-        setLoginError(t.otpError);
-      }
+      setLoginError(lang === 'en' ? "Please fill all details" : "कृपया सर्व माहिती भरा");
     }
   };
 
-  const handleResendOtp = () => {
-    if (timer === 0) {
-      handleLogin();
-    }
-  };
+
 
   const handleRating = (courseId, rating) => {
     setCourses(prev => prev.map(c => c.id === courseId ? { ...c, rating } : c));
@@ -482,90 +407,39 @@ function App() {
 
           <form onSubmit={handleLogin} className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/50 dark:border-slate-700/50 animate-in fade-in zoom-in-95 duration-500">
             <div className="space-y-6">
-              {!otpSent ? (
-                <>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">{t.fullName}</label>
-                    <div className="relative">
-                      <User className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                      <input
-                        type="text"
-                        required
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder={lang === 'en' ? "Enter your name" : "तुमचे नाव टाका"}
-                        className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 dark:text-white rounded-2xl py-5 pl-14 pr-6 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-semibold"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">{t.mobileNumber}</label>
-                    <div className="relative">
-                      <Phone className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                      <input
-                        type="tel"
-                        required
-                        maxLength={10}
-                        value={phone}
-                        onChange={(e) => {
-                          const val = e.target.value.replace(/\D/g, '').slice(0, 10);
-                          setPhone(val);
-                        }}
-                        placeholder="Enter 10-digit number"
-                        className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 dark:text-white rounded-2xl py-5 pl-14 pr-6 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-semibold"
-                      />
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <div className="space-y-4 animate-in slide-in-from-right duration-500">
-                  <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-2xl border border-blue-100 dark:border-blue-800 flex items-start gap-3">
-                    <ShieldCheck size={20} className="text-blue-600 shrink-0 mt-1" />
-                    <div>
-                      <p className="text-sm font-bold text-blue-900 dark:text-blue-200">{t.otpSentMsg}</p>
-                      <p className="text-xs text-blue-600 mt-1">{phone.replace(/.(?=.{4})/g, '*')}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">{t.enterOtp}</label>
-                    <div className="relative">
-                      <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                      <input
-                        type="text"
-                        required
-                        maxLength={4}
-                        value={otpInput}
-                        onChange={(e) => setOtpInput(e.target.value.replace(/\D/g, ''))}
-                        placeholder="----"
-                        className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 dark:text-white rounded-2xl py-5 pl-14 pr-6 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-black text-2xl tracking-[0.5em] text-center"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-between items-center px-2 mt-4">
-                    <button 
-                      type="button"
-                      onClick={() => {
-                        setOtpSent(false);
-                        setOtpInput("");
-                      }}
-                      className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-blue-600 transition-colors"
-                    >
-                      Change Number
-                    </button>
-                    <button 
-                      type="button"
-                      disabled={timer > 0}
-                      onClick={handleResendOtp}
-                      className={`text-[10px] font-black uppercase tracking-widest transition-colors ${timer > 0 ? 'text-slate-300' : 'text-blue-600 hover:text-blue-800'}`}
-                    >
-                      {timer > 0 ? `Resend in ${timer}s` : "Resend OTP"}
-                    </button>
-                  </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">{t.fullName}</label>
+                <div className="relative">
+                  <User className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                  <input
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder={lang === 'en' ? "Enter your name" : "तुमचे नाव टाका"}
+                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 dark:text-white rounded-2xl py-5 pl-14 pr-6 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-semibold"
+                  />
                 </div>
-              )}
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">{t.mobileNumber}</label>
+                <div className="relative">
+                  <Phone className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                  <input
+                    type="tel"
+                    required
+                    maxLength={10}
+                    value={phone}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                      setPhone(val);
+                    }}
+                    placeholder="Enter 10-digit number"
+                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 dark:text-white rounded-2xl py-5 pl-14 pr-6 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-semibold"
+                  />
+                </div>
+              </div>
 
               {loginError && (
                 <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 p-4 rounded-2xl text-red-600 text-xs font-bold animate-pulse">
@@ -582,9 +456,7 @@ function App() {
                   <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
                 )}
                 <span className="relative z-10">
-                  {loginLoading 
-                    ? (!otpSent ? t.otpLoading : "Verifying...") 
-                    : (!otpSent ? t.sendOtp : t.verifyOtp)}
+                  {loginLoading ? t.otpLoading : t.enterWebsite}
                 </span>
                 {!loginLoading && (
                   <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
