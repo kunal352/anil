@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Star,
   Clock,
@@ -33,12 +34,12 @@ const CONFIG = {
   mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15024.1824419!2d74.204558!3d19.643336!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bdd0060939527cf%3A0xe67db5d9921b06cd!2sLohare%2C%20Maharashtra%20422605!5e0!3m2!1sen!2sin!4v1708510000000!5m2!1sen!2sin",
   whatsappPhone: "918007256435",
   instagram: {
-    web: "https://www.instagram.com/kunalgandole5/",
-    app: "instagram://user?username=kunalgandole5"
+    web: "https://www.instagram.com/kunalgandole",
+    app: "instagram://user?username=kunalgandole"
   },
   facebook: {
-    web: "https://www.facebook.com/anilgadhe/",
-    app: "fb://profile/100025171787040"
+    web: "https://www.facebook.com/kunalgandole2005/",
+    app: "fb://profile/kunalgandole2005"
   }
 };
 
@@ -234,7 +235,17 @@ const testimonialsData = [
 ];
 
 function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("tm_school_user");
+    if (storedUser) {
+      try {
+        return JSON.parse(storedUser);
+      } catch {
+        localStorage.removeItem("tm_school_user");
+      }
+    }
+    return null;
+  });
   const [courses, setCourses] = useState(servicesData);
   const [selectedImage, setSelectedImage] = useState(null);
   const [feedback, setFeedback] = useState("");
@@ -243,17 +254,6 @@ function App() {
 
   // Language State: Default 'mr' (Marathi)
   const [lang, setLang] = useState('mr');
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem("tm_school_user");
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch {
-        localStorage.removeItem("tm_school_user");
-      }
-    }
-  }, []);
 
   // Theme State & Logic
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
@@ -281,10 +281,8 @@ function App() {
 
     if (isMobile) {
       // Direct App Schemes
-      const appUrl = platform === 'instagram' 
-        ? "instagram://user?username=kunalgandole5" 
-        : "fb://profile/100025171787040";
-      
+      const appUrl = config.app;
+
       // Try to open the app
       window.location.href = appUrl;
 
@@ -337,8 +335,8 @@ function App() {
 
         {/* Top bar for Logo, Theme & Language toggles */}
         <div className="absolute top-0 left-0 w-full p-4 md:p-6 flex justify-between items-center z-50">
-          <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-lg md:text-xl shadow-lg shadow-blue-200 dark:shadow-none">
-            S
+          <div className="w-10 h-10 md:w-12 md:h-12 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200 dark:shadow-none overflow-hidden">
+            <img src="/logo.png" alt="Saikrupa Logo" className="w-full h-full object-cover" />
           </div>
           <div className="flex gap-2 md:gap-3">
             <button
@@ -358,8 +356,13 @@ function App() {
           </div>
         </div>
 
-        <div className="w-full max-w-xl relative">
-          <div className="text-center mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="w-full max-w-xl relative"
+        >
+          <div className="text-center mb-10">
             <h1 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight mb-3 leading-tight">
               {t.loginTitle}
             </h1>
@@ -368,7 +371,7 @@ function App() {
             </p>
           </div>
 
-          <form onSubmit={handleLogin} className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/50 dark:border-slate-700/50 animate-in fade-in zoom-in-95 duration-500">
+          <form onSubmit={handleLogin} className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/50 dark:border-slate-700/50">
             <div className="space-y-6">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">{t.fullName}</label>
@@ -415,35 +418,61 @@ function App() {
             <ShieldCheck size={14} />
             <span className="text-[10px] font-bold uppercase tracking-widest">{t.safeSecure}</span>
           </div>
-        </div>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className={`min-h-screen flex flex-col ${theme === 'dark' ? 'bg-slate-950' : 'bg-[#fcfcfd]'} relative font-inter transition-colors duration-300`}>
+    <div className={`min-h-screen flex flex-col ${theme === 'dark' ? 'bg-slate-950' : 'bg-[#fcfcfd]'} relative font-inter transition-colors duration-300 overflow-x-hidden`}>
       {/* Image Modal */}
-      {selectedImage && (
-        <div className="fixed inset-0 z-[500] flex items-center justify-center p-0 bg-black/95 backdrop-blur-xl animate-in fade-in zoom-in duration-300" onClick={() => setSelectedImage(null)}>
-          <button className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-[510] bg-white/10 p-2 rounded-full backdrop-blur-md" onClick={() => setSelectedImage(null)}>
-            <X size={32} />
-          </button>
-          <div className="w-full h-full flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
-            <img
-              src={selectedImage}
-              alt="Service Detail"
-              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
-            />
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[500] flex items-center justify-center p-0 bg-black/95 backdrop-blur-xl"
+            onClick={() => setSelectedImage(null)}
+          >
+            <button className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-[510] bg-white/10 p-2 rounded-full backdrop-blur-md" onClick={() => setSelectedImage(null)}>
+              <X size={32} />
+            </button>
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="w-full h-full flex items-center justify-center p-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={selectedImage}
+                alt="Service Detail"
+                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 sticky top-0 z-50 transition-colors">
         <div className="max-w-5xl mx-auto px-4 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3 animate-in fade-in slide-in-from-top duration-700">
-            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-lg float-animation">S</div>
+          <motion.div
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="flex items-center gap-3"
+          >
+            <motion.div
+              animate={{ y: [0, -5, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="w-10 h-10 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center shadow-sm overflow-hidden"
+            >
+              <img src="/logo.png" alt="Saikrupa Logo" className="w-full h-full object-cover" />
+            </motion.div>
             <h1 className="text-lg md:text-xl font-black text-slate-900 dark:text-white tracking-tight truncate max-w-[150px] md:max-w-none">{t.title}</h1>
-          </div>
+          </motion.div>
           <div className="flex items-center gap-2 md:gap-4">
             {/* Theme Toggle Header */}
             <button
@@ -494,17 +523,32 @@ function App() {
           <p className="text-slate-500 dark:text-slate-400 text-lg md:text-2xl max-w-3xl mx-auto leading-relaxed mb-12 font-medium animate-in fade-in slide-in-from-bottom duration-700 delay-200">
             {t.heroDesc}
           </p>
-          
-          <div className="flex flex-wrap justify-center gap-6 animate-in fade-in slide-in-from-bottom duration-700 delay-300">
-            <a href="tel:918007256435" className="px-8 py-5 bg-blue-600 text-white rounded-3xl font-black text-sm uppercase tracking-widest shadow-xl shadow-blue-200 dark:shadow-blue-900/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3">
+
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="flex flex-wrap justify-center gap-6"
+          >
+            <motion.a
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              href="tel:918007256435"
+              className="px-8 py-5 bg-blue-600 text-white rounded-3xl font-black text-sm uppercase tracking-widest shadow-xl shadow-blue-200 dark:shadow-blue-900/20 flex items-center gap-3"
+            >
               <Phone size={18} /> {t.contactPerson}
-            </a>
-            <button onClick={() => {
-              document.getElementById('services-section').scrollIntoView({ behavior: 'smooth' });
-            }} className="px-8 py-5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 rounded-3xl font-black text-sm uppercase tracking-widest shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+            </motion.a>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                document.getElementById('services-section').scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="px-8 py-5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 rounded-3xl font-black text-sm uppercase tracking-widest shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+            >
               {t.ourServices}
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         </div>
       </section>
 
@@ -517,29 +561,38 @@ function App() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="p-8 rounded-[2.5rem] bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-900 hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-all group">
+            <motion.div
+              whileHover={{ y: -10 }}
+              className="p-8 rounded-[2.5rem] bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-900 hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-colors group"
+            >
               <div className="w-14 h-14 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-sm group-hover:scale-110 transition-transform mb-6">
                 <Trophy size={28} />
               </div>
               <h4 className="text-xl font-black text-slate-900 dark:text-white mb-3">{t.tenYearGuarantee}</h4>
               <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">{t.tenYearGuaranteeDesc}</p>
-            </div>
+            </motion.div>
 
-            <div className="p-8 rounded-[2.5rem] bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-900 hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-all group">
+            <motion.div
+              whileHover={{ y: -10 }}
+              className="p-8 rounded-[2.5rem] bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-900 hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-colors group"
+            >
               <div className="w-14 h-14 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-sm group-hover:scale-110 transition-transform mb-6">
                 <Zap size={28} />
               </div>
               <h4 className="text-xl font-black text-slate-900 dark:text-white mb-3">{t.noBreaking}</h4>
               <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">{t.noBreakingDesc}</p>
-            </div>
+            </motion.div>
 
-            <div className="p-8 rounded-[2.5rem] bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-900 hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-all group">
+            <motion.div
+              whileHover={{ y: -10 }}
+              className="p-8 rounded-[2.5rem] bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-900 hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-colors group"
+            >
               <div className="w-14 h-14 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-sm group-hover:scale-110 transition-transform mb-6">
                 <Settings size={28} />
               </div>
               <h4 className="text-xl font-black text-slate-900 dark:text-white mb-3">{t.certifiedMaterials}</h4>
               <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">{t.certifiedMaterialsDesc}</p>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -552,7 +605,14 @@ function App() {
           </div>
           {courses.map((course, index) => {
             return (
-              <div key={course.id} className={`relative animate-in fade-in slide-in-from-bottom duration-700 delay-${(index + 1) * 100}`}>
+              <motion.div
+                key={course.id}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.7, delay: index * 0.1 }}
+                className="relative"
+              >
                 <div className={`bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col md:flex-row gap-0 group transition-all hover:shadow-2xl dark:hover:shadow-blue-900/20 hover:border-blue-200 dark:hover:border-blue-800`}>
                   {/* Image Display Section */}
                   <div
@@ -644,7 +704,7 @@ function App() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
@@ -713,7 +773,7 @@ function App() {
               <p className="text-sm font-medium text-slate-400 uppercase tracking-widest">{t.visitUs}</p>
             </div>
           </div>
-          
+
           <div className="w-full h-[400px] rounded-[3rem] overflow-hidden border-8 border-white dark:border-slate-900 shadow-2xl relative group">
             <iframe
               title="Google Map"
@@ -733,20 +793,22 @@ function App() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
             <div className="lg:col-span-2">
               <div className="flex items-center gap-3 mb-8">
-                <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-xl">S</div>
+                <div className="w-12 h-12 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center shadow-md overflow-hidden">
+                  <img src="/logo.png" alt="Saikrupa Logo" className="w-full h-full object-cover" />
+                </div>
                 <h4 className="text-2xl font-black tracking-tight">{t.title}</h4>
               </div>
               <p className="text-slate-400 font-medium leading-relaxed max-w-sm mb-10">
                 {t.heroDesc}
               </p>
               <div className="flex gap-5">
-                <button 
+                <button
                   onClick={() => handleSocialOpen('instagram')}
                   className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-slate-400 hover:text-white hover:bg-blue-600 transition-all"
                 >
                   <Instagram size={20} />
                 </button>
-                <button 
+                <button
                   onClick={() => handleSocialOpen('facebook')}
                   className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-slate-400 hover:text-white hover:bg-blue-600 transition-all"
                 >
@@ -768,7 +830,7 @@ function App() {
                 </div>
                 <div className="flex gap-4">
                   <Mail className="text-slate-500 shrink-0" size={20} />
-                  <p className="text-slate-400 font-medium text-sm leading-relaxed">contact@saikrupa.com</p>
+                  <p className="text-slate-400 font-medium text-sm leading-relaxed">kunalgandole2005@gmail.com</p>
                 </div>
               </div>
             </div>
@@ -790,7 +852,7 @@ function App() {
           </div>
         </div>
       </footer>
-    </div>
+    </div >
   );
 }
 
