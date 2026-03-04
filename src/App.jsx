@@ -26,8 +26,17 @@ import {
   Mail,
   Check,
   Moon,
-  Sun
+  Sun,
+  ThumbsUp,
+  MessageCircle,
+  Share2,
+  MoreHorizontal,
+  Globe,
+  Plus,
+  Trash2,
+  Upload
 } from 'lucide-react';
+import { useDropzone } from 'react-dropzone';
 
 // Configuration
 const CONFIG = {
@@ -89,7 +98,23 @@ const translations = {
     addressDetail: "Lohare, Kasare, Sangamner, Dist. Ahmednagar",
     quickLinks: "Quick Links",
     themeLight: "Light Mode",
-    themeDark: "Dark Mode"
+    themeDark: "Dark Mode",
+    sponsoredTitle: "Sponsored Links",
+    sponsoredDesc: "Special offers from our trusted partners",
+    sponsored: "Sponsored",
+    learnMore: "Learn More",
+    likes: "Likes",
+    comments: "Comments",
+    shares: "Shares",
+    addAd: "Add New Ad",
+    uploadImage: "Upload Image",
+    companyName: "Company/Page Name",
+    adDescription: "Ad Description/Caption",
+    linkUrl: "Promotional Link (e.g. https://...)",
+    saveAd: "Save Ad",
+    cancel: "Cancel",
+    deleteAd: "Delete Ad",
+    dragDrop: "Drag & drop image here, or click to select"
   },
   mr: {
     title: "साईकृपा वॉटरप्रूफिंग सर्विसेस",
@@ -135,7 +160,23 @@ const translations = {
     addressDetail: "लोहरे, कसारे, संगमनेर, जि. अहमदनगर",
     quickLinks: "महत्वाच्या लिंक्स",
     themeLight: "लाईट मोड",
-    themeDark: "डार्क मोड"
+    themeDark: "डार्क मोड",
+    sponsoredTitle: "पुरस्कृत लिंक्स",
+    sponsoredDesc: "आमच्या विश्वसनीय भागीदारांकडून खास ऑफर्स",
+    sponsored: "पुरस्कृत",
+    learnMore: "अधिक माहिती",
+    likes: "लाइक्स",
+    comments: "कमेंट्स",
+    shares: "शेअर्स",
+    addAd: "नवीन जाहिरात जोडा",
+    uploadImage: "फोटो अपलोड करा",
+    companyName: "कंपनीचे नाव",
+    adDescription: "जाहिरातीची माहिती",
+    linkUrl: "प्रमोशनल लिंक (उदा. https://...)",
+    saveAd: "जाहिरात सेव्ह करा",
+    cancel: "रद्द करा",
+    deleteAd: "जाहिरात डिलीट करा",
+    dragDrop: "फोटो इथे ड्रॅग करा किंवा क्लिक करा"
   }
 };
 
@@ -234,6 +275,35 @@ const testimonialsData = [
   }
 ];
 
+const initialSocialAdsData = [
+  {
+    id: 1,
+    pageName_en: "Berger Paints India",
+    pageName_mr: "बर्जर पेंट्स इंडिया",
+    profilePic: "https://images.crunchbase.com/image/upload/c_lpad,f_auto,q_auto:eco,dpr_1/v1404169543/njtpyo3nd1z7ww5m02ee.png",
+    content_en: "Protect your home with Berger Home Shield Waterproofing Solutions. Say goodbye to dampness and leaks! 🏠💧 #Waterproofing #BergerPaints",
+    content_mr: "Berger Home Shield वॉटरप्रूफिंग सोल्यूशन्ससह तुमच्या घराचे रक्षण करा. ओलसरपणा आणि गळतीला कायमचा निरोप द्या! 🏠💧 #Waterproofing #BergerPaints",
+    image: "https://www.bergerpaints.com/imag/homeshield/home-shield-desktop-home.jpg",
+    likesCount: 1245,
+    commentsCount: 128,
+    sharesCount: 45,
+    linkUrl: "https://www.bergerpaints.com/scientific-waterproofing-solutions/"
+  },
+  {
+    id: 2,
+    pageName_en: "Asian Paints",
+    pageName_mr: "एशियन पेंट्स",
+    profilePic: "https://play-lh.googleusercontent.com/9nF_Xp4r7nN-rB0hP1p7a3Z_S2y7_P_Y5o0m3F8g-aZ8-Jq9-P16_R6QY_v8qP9Q_w",
+    content_en: "SmartCare Damp Proof with 10 years of waterproofing warranty. The ultimate solution for your terrace and exterior walls.",
+    content_mr: "स्मार्टकेअर डॅम्प प्रूफ, १० वर्षांच्या वॉटरप्रूफिंग वॉरंटीसह. तुमच्या गच्चीसाठी आणि बाहेरील भिंतींसाठी सर्वोत्तम उपाय.",
+    image: "https://www.asianpaints.com/content/dam/asianpaints/website/home-page/products/smartcare-waterproofing-product-banner.jpg.transform/cc-width-800-height-424/image.jpg",
+    likesCount: 3420,
+    commentsCount: 256,
+    sharesCount: 89,
+    linkUrl: "https://www.asianpaints.com/"
+  }
+];
+
 function App() {
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem("tm_school_user");
@@ -247,10 +317,92 @@ function App() {
     return null;
   });
   const [courses, setCourses] = useState(servicesData);
+  const [socialAds, setSocialAds] = useState(() => {
+    const saved = localStorage.getItem('saikrupa_social_ads');
+    return saved ? JSON.parse(saved) : initialSocialAdsData;
+  });
   const [selectedImage, setSelectedImage] = useState(null);
   const [feedback, setFeedback] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+
+  // Ad Creation State
+  const [isAddingAd, setIsAddingAd] = useState(false);
+  const [newAd, setNewAd] = useState({
+    pageName: "",
+    content: "",
+    linkUrl: "",
+    image: null
+  });
+
+  useEffect(() => {
+    localStorage.setItem('saikrupa_social_ads', JSON.stringify(socialAds));
+  }, [socialAds]);
+
+  const onDrop = (acceptedFiles) => {
+    const file = acceptedFiles[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setNewAd(prev => ({ ...prev, image: e.target.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: { 'image/*': [] },
+    maxFiles: 1
+  });
+
+  const handleCreateAd = () => {
+    if (!newAd.pageName || !newAd.content || !newAd.image) return;
+
+    const ad = {
+      id: Date.now(),
+      pageName_en: newAd.pageName,
+      pageName_mr: newAd.pageName, // For simplicitly using same for both
+      profilePic: "/logo.png", // Default profile pic
+      content_en: newAd.content,
+      content_mr: newAd.content,
+      image: newAd.image,
+      likesCount: Math.floor(Math.random() * 500) + 50,
+      commentsCount: Math.floor(Math.random() * 100) + 10,
+      sharesCount: Math.floor(Math.random() * 50) + 5,
+      linkUrl: newAd.linkUrl || "https://wa.me/918007256435"
+    };
+
+    setSocialAds(prev => [ad, ...prev]);
+    setIsAddingAd(false);
+    setNewAd({ pageName: "", content: "", linkUrl: "", image: null });
+  };
+
+  const handleDeleteAd = (id) => {
+    setSocialAds(prev => prev.filter(ad => ad.id !== id));
+  };
+
+  const handleShareAd = async (ad) => {
+    const textToShare = `${ad.pageName_mr}\n\n${ad.content_mr}\n\nअधिक माहितीसाठी: ${ad.linkUrl}`;
+
+    // Check if Web Share API is available (works great on mobile devices and newer browsers)
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: ad.pageName_mr,
+          text: textToShare,
+          url: ad.linkUrl
+        });
+        return;
+      } catch (err) {
+        console.log("Error sharing:", err);
+      }
+    }
+
+    // Fallback: Open Facebook share dialog directly
+    const fbShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(ad.linkUrl)}&quote=${encodeURIComponent(textToShare)}`;
+    window.open(fbShareUrl, '_blank', 'width=600,height=400');
+  };
 
   // Language State: Default 'mr' (Marathi)
   const [lang, setLang] = useState('mr');
@@ -707,6 +859,231 @@ function App() {
               </motion.div>
             );
           })}
+        </div>
+
+        {/* Social Ads Section */}
+        <div className="mt-24 mb-16">
+          <div className="flex items-center justify-between mb-10 flex-wrap gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-100 dark:shadow-blue-900/20">
+                <Star size={24} />
+              </div>
+              <div>
+                <h3 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-none mb-2">{t.sponsoredTitle}</h3>
+                <p className="text-sm font-medium text-slate-400 uppercase tracking-widest">{t.sponsoredDesc}</p>
+              </div>
+            </div>
+            {user?.name && (
+              <button
+                onClick={() => setIsAddingAd(true)}
+                className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-blue-600 dark:hover:bg-blue-50 transition-colors shadow-lg active:scale-95"
+              >
+                <Plus size={18} /> {t.addAd}
+              </button>
+            )}
+          </div>
+
+          <AnimatePresence>
+            {isAddingAd && (
+              <motion.div
+                initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+                animate={{ opacity: 1, height: 'auto', marginBottom: 32 }}
+                exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden"
+              >
+                <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-6 md:p-8 border border-slate-200 dark:border-slate-800 shadow-xl">
+                  <div className="flex justify-between items-center mb-6">
+                    <h4 className="text-xl font-bold text-slate-900 dark:text-white">{t.addAd}</h4>
+                    <button onClick={() => setIsAddingAd(false)} className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+                      <X size={24} />
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Image Upload Area */}
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">{t.uploadImage} *</label>
+                      <div
+                        {...getRootProps()}
+                        className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-colors aspect-video md:aspect-square flex flex-col items-center justify-center
+                          ${isDragActive ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-slate-300 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-slate-50 dark:hover:bg-slate-800/50'}
+                          ${newAd.image ? 'p-1' : ''}
+                        `}
+                      >
+                        <input {...getInputProps()} />
+                        {newAd.image ? (
+                          <div className="relative w-full h-full rounded-xl overflow-hidden group">
+                            <img src={newAd.image} alt="Preview" className="w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                              <span className="text-white font-bold flex items-center gap-2"><Upload size={18} /> Change Image</span>
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 text-blue-500 rounded-full flex items-center justify-center mb-4">
+                              <Upload size={28} />
+                            </div>
+                            <p className="text-slate-500 dark:text-slate-400 font-medium">{t.dragDrop}</p>
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Form Fields */}
+                    <div className="space-y-5">
+                      <div>
+                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">{t.companyName} *</label>
+                        <input
+                          type="text"
+                          value={newAd.pageName}
+                          onChange={(e) => setNewAd(prev => ({ ...prev, pageName: e.target.value }))}
+                          className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                          placeholder={lang === 'en' ? "E.g. Saikrupa Services" : "उदा. साईकृपा सर्व्हिसेस"}
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">{t.adDescription} *</label>
+                        <textarea
+                          value={newAd.content}
+                          onChange={(e) => setNewAd(prev => ({ ...prev, content: e.target.value }))}
+                          rows={4}
+                          className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
+                          placeholder={lang === 'en' ? "Write something engaging..." : "काहीतरी आकर्षक लिहा..."}
+                        ></textarea>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">{t.linkUrl} (Optional)</label>
+                        <input
+                          type="url"
+                          value={newAd.linkUrl}
+                          onChange={(e) => setNewAd(prev => ({ ...prev, linkUrl: e.target.value }))}
+                          className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                          placeholder="https://..."
+                        />
+                      </div>
+
+                      <div className="flex gap-4 pt-4">
+                        <button
+                          onClick={() => setIsAddingAd(false)}
+                          className="flex-1 px-6 py-4 rounded-xl font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                        >
+                          {t.cancel}
+                        </button>
+                        <button
+                          onClick={handleCreateAd}
+                          disabled={!newAd.pageName || !newAd.content || !newAd.image}
+                          className="flex-1 px-6 py-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-lg shadow-blue-500/30"
+                        >
+                          {t.saveAd}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {socialAds.map((ad, idx) => (
+              <motion.div
+                key={ad.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: idx * 0.2 }}
+                className="bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col"
+              >
+                {/* Header */}
+                <div className="p-5 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <img src={ad.profilePic} alt={ad[`pageName_${lang}`]} className="w-12 h-12 rounded-full border border-slate-200 dark:border-slate-700 object-cover" />
+                    <div>
+                      <h4 className="font-bold text-slate-900 dark:text-white text-[15px] leading-tight flex items-center gap-1">
+                        {ad[`pageName_${lang}`] || ad.pageName_en}
+                        <span className="w-3.5 h-3.5 bg-blue-500 rounded-full flex items-center justify-center">
+                          <Check size={8} className="text-white" />
+                        </span>
+                      </h4>
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
+                        {t.sponsored} <Globe size={10} />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {ad.id > 100 && (
+                      <button
+                        onClick={() => handleDeleteAd(ad.id)}
+                        className="text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 p-2 rounded-xl transition-colors"
+                        title={t.deleteAd}
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    )}
+                    <button className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-2">
+                      <MoreHorizontal size={20} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="px-5 pb-4">
+                  <p className="text-slate-800 dark:text-slate-200 text-[15px] leading-relaxed break-words whitespace-pre-wrap">
+                    {ad[`content_${lang}`] || ad.content_en}
+                  </p>
+                </div>
+
+                {/* Media Image & CTA Link */}
+                <a href={ad.linkUrl} target="_blank" rel="noopener noreferrer" className="block relative group overflow-hidden bg-slate-100 dark:bg-slate-800">
+                  <div className="aspect-[4/3] w-full">
+                    <img src={ad.image} alt="Ad Visual" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  </div>
+                  <div className="bg-slate-50 dark:bg-slate-800/80 backdrop-blur-sm border-t border-slate-100 dark:border-slate-800 p-4 flex items-center justify-between group-hover:bg-slate-100 dark:group-hover:bg-slate-700/80 transition-colors">
+                    <div>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider block mb-0.5">{new URL(ad.linkUrl).hostname.replace('www.', '')}</span>
+                      <strong className="text-sm font-bold text-slate-900 dark:text-white">{t.learnMore}</strong>
+                    </div>
+                    <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+                      <ArrowRight size={14} className="text-slate-600 dark:text-slate-300" />
+                    </div>
+                  </div>
+                </a>
+
+                {/* Engagement Stats */}
+                <div className="px-5 py-3 flex items-center justify-between text-slate-500 dark:text-slate-400 text-[13px] border-b border-slate-100 dark:border-slate-800/50">
+                  <div className="flex items-center gap-1.5">
+                    <div className="bg-blue-500 w-5 h-5 rounded-full flex items-center justify-center">
+                      <ThumbsUp size={10} className="text-white fill-white" />
+                    </div>
+                    <span>{ad.likesCount.toLocaleString()}</span>
+                  </div>
+                  <div className="flex gap-3">
+                    <span>{ad.commentsCount} {lang === 'en' ? 'comments' : 'कमेंट्स'}</span>
+                    <span>{ad.sharesCount} {lang === 'en' ? 'shares' : 'शेअर्स'}</span>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="px-2 py-1.5 flex justify-between">
+                  <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-[14px] transition-colors active:scale-95">
+                    <ThumbsUp size={20} /> {lang === 'en' ? 'Like' : 'लाईक'}
+                  </button>
+                  <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-[14px] transition-colors active:scale-95">
+                    <MessageCircle size={20} /> {lang === 'en' ? 'Comment' : 'कमेंट'}
+                  </button>
+                  <button
+                    onClick={() => handleShareAd(ad)}
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-[14px] transition-colors active:scale-95"
+                  >
+                    <Share2 size={20} /> {lang === 'en' ? 'Share' : 'शेअर'}
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         <div className="mt-24 mb-16">
